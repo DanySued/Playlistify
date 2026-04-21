@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
+import * as LucideIcons from "lucide-react";
 import { Folder as FolderIcon, FolderOpen, Plus, Pencil } from "lucide-react";
 import { Link } from "react-router";
 import type { Folder } from "../../types";
@@ -11,6 +12,12 @@ interface FolderSelectorProps {
   onEditFolder?: (folder: Folder) => void;
   editMode?: boolean;
   onToggleEditMode?: () => void;
+}
+
+function getIconComponent(iconName?: string) {
+  if (!iconName) return FolderIcon;
+  const IconComponent = (LucideIcons as Record<string, any>)[iconName];
+  return IconComponent || FolderIcon;
 }
 
 export function FolderSelector({
@@ -27,7 +34,7 @@ export function FolderSelector({
       {/* Create New Folder Button */}
       <Link to="/new-folder">
         <motion.button
-          className="flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all"
+          className="flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-[#1DB954] hover:text-[#1DB954] hover:bg-[#1DB954]/10 dark:hover:bg-[#1DB954]/20 transition-all"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           title="Create new folder"
@@ -42,8 +49,8 @@ export function FolderSelector({
           onClick={onToggleEditMode}
           className={`flex items-center justify-center w-10 h-10 rounded-xl font-medium text-sm transition-all ${
             editMode
-              ? "bg-indigo-600 text-white shadow-md"
-              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+              ? "bg-[#1DB954] text-white shadow-md"
+              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-2 border-gray-300 dark:border-gray-600 hover:border-[#1DB954] hover:text-[#1DB954] hover:bg-[#1DB954]/10 dark:hover:bg-[#1DB954]/20"
           }`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -58,8 +65,8 @@ export function FolderSelector({
         onClick={() => onSelectFolder(null)}
         className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
           selectedFolderId === null
-            ? "bg-indigo-600 text-white shadow-md"
-            : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 hover:border-indigo-300"
+            ? "bg-[#1DB954] text-white shadow-md"
+            : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 hover:border-[#1DB954]"
         }`}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -113,7 +120,10 @@ export function FolderSelector({
                   : undefined
               }
             >
-              <span className="text-base mr-1">{folder.icon}</span>
+              {(() => {
+                const Icon = getIconComponent(folder.iconName);
+                return <Icon className="w-4 h-4 inline mr-1" />;
+              })()}
               {folder.name}
             </span>
             <span
@@ -139,7 +149,7 @@ export function FolderSelector({
                   e.stopPropagation();
                   onEditFolder(folder);
                 }}
-                className="absolute -right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-gray-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-400 rounded-lg flex items-center justify-center transition-colors shadow-sm"
+                className="absolute -right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-gray-800 hover:bg-[#1DB954]/10 dark:hover:bg-[#1DB954]/20 border-2 border-gray-300 dark:border-gray-600 hover:border-[#1DB954] rounded-lg flex items-center justify-center transition-colors shadow-sm"
               >
                 <Pencil className="w-3 h-3 text-gray-600 dark:text-gray-300" />
               </motion.button>

@@ -45,8 +45,8 @@ export default function ProfilePage() {
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Music className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+            <div className="w-20 h-20 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="w-10 h-10 text-[#1DB954] dark:text-[#1DB954]" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to view your profile
@@ -56,7 +56,7 @@ export default function ProfilePage() {
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link to="/login">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
+                <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6">
                   Sign in
                 </Button>
               </Link>
@@ -119,13 +119,13 @@ export default function ProfilePage() {
 
       <main className="pt-20 pb-16">
         {/* ── Hero banner ── */}
-        <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-br from-[#0f5a2a] via-[#1DB954] to-[#0d4a22] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#1DB954]/20 blur-3xl pointer-events-none" />
           <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-14 relative z-10">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               {/* User info */}
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white border-4 border-white/20 shadow-2xl flex-shrink-0">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#1DB954] to-[#1aa34a] flex items-center justify-center text-2xl sm:text-3xl font-bold text-white border-4 border-white/20 shadow-2xl flex-shrink-0">
                   {user!.initials}
                 </div>
                 <div>
@@ -233,8 +233,8 @@ export default function ProfilePage() {
                 icon: ListMusic,
                 label: "Total Playlists",
                 value: spotifyPlaylists.length,
-                color: "text-indigo-600 dark:text-indigo-400",
-                bg: "bg-indigo-50 dark:bg-indigo-900/30",
+                color: "text-[#1DB954] dark:text-[#1DB954]",
+                bg: "bg-[#1DB954]/10 dark:bg-[#1DB954]/30",
               },
               {
                 icon: Music,
@@ -247,8 +247,8 @@ export default function ProfilePage() {
                 icon: Users,
                 label: "Followers",
                 value: user!.followers,
-                color: "text-purple-600 dark:text-purple-400",
-                bg: "bg-purple-50 dark:bg-purple-900/30",
+                color: "text-[#1DB954] dark:text-[#1DB954]",
+                bg: "bg-[#1DB954]/10 dark:bg-[#1DB954]/30",
               },
             ].map(({ icon: Icon, label, value, color, bg }) => (
               <div
@@ -284,14 +284,14 @@ export default function ProfilePage() {
                 <Link to="/new-folder">
                   <Button
                     variant="outline"
-                    className="text-sm px-4 border-gray-200 dark:border-gray-600 hover:border-indigo-300 hover:text-indigo-600"
+                    className="text-sm px-4 border-gray-200 dark:border-gray-600 hover:border-[#1DB954] hover:text-[#1DB954]"
                   >
                     <FolderPlus className="w-4 h-4 mr-2" />
                     New Folder
                   </Button>
                 </Link>
                 <Link to="/new-playlist">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4">
+                  <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white text-sm px-4">
                     + New Playlist
                   </Button>
                 </Link>
@@ -312,7 +312,7 @@ export default function ProfilePage() {
                     : "Connect Spotify to import your playlists, or create a new one."}
                 </p>
                 <Link to="/new-playlist">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white">
                     Create Playlist
                   </Button>
                 </Link>

@@ -13,5 +13,5 @@ export interface Folder {
   name: string;
   description: string;
   color: string; // Hex color for the folder
-  icon?: string; // Optional emoji or icon identifier
+  iconName?: string; // Lucide icon name
 }

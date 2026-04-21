@@ -72,7 +72,7 @@ export function ManagePlaylistFolderModal({
               onClick={() => setSelectedFolderId(null)}
               className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
                 selectedFolderId === null
-                  ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                  ? "border-[#1DB954] bg-indigo-50 dark:bg-indigo-900/20"
                   : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800"
               }`}
             >
@@ -90,7 +90,7 @@ export function ManagePlaylistFolderModal({
                 </div>
               </div>
               {selectedFolderId === null && (
-                <Check className="w-5 h-5 text-indigo-600" />
+                <Check className="w-5 h-5 text-[#1DB954]" />
               )}
             </button>
 
@@ -101,7 +101,7 @@ export function ManagePlaylistFolderModal({
                 onClick={() => setSelectedFolderId(folder.id)}
                 className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
                   selectedFolderId === folder.id
-                    ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                    ? "border-[#1DB954] bg-indigo-50 dark:bg-indigo-900/20"
                     : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800"
                 }`}
               >
@@ -126,7 +126,7 @@ export function ManagePlaylistFolderModal({
                   </div>
                 </div>
                 {selectedFolderId === folder.id && (
-                  <Check className="w-5 h-5 text-indigo-600" />
+                  <Check className="w-5 h-5 text-[#1DB954]" />
                 )}
               </button>
             ))}
@@ -140,7 +140,7 @@ export function ManagePlaylistFolderModal({
           </Button>
           <Button
             onClick={handleSave}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6"
+            className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6"
           >
             Save Changes
           </Button>

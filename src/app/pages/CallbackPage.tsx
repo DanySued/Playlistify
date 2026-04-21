@@ -54,7 +54,7 @@ export default function CallbackPage() {
           <p className="text-gray-500 dark:text-gray-400 text-sm">{error}</p>
           <button
             onClick={() => navigate("/login", { replace: true })}
-            className="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
+            className="mt-2 w-full bg-[#1DB954] hover:bg-[#1aa34a] text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
           >
             Back to login
           </button>
@@ -66,10 +66,10 @@ export default function CallbackPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950">
       <div className="flex flex-col items-center gap-5">
-        <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center">
-          <Music className="w-8 h-8 text-indigo-600" />
+        <div className="w-16 h-16 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-2xl flex items-center justify-center">
+          <Music className="w-8 h-8 text-[#1DB954]" />
         </div>
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#1DB954]" />
         <div className="text-center">
           <p className="font-semibold text-gray-800 dark:text-gray-200">
             Connecting your Spotify…

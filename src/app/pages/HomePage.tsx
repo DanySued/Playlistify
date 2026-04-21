@@ -118,7 +118,7 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
           {/* Header */}
           <div className="mb-12">
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#1DB954] to-[#1aa34a] bg-clip-text text-transparent">
               {isAuthenticated
                 ? `Welcome back, ${user?.name}!`
                 : "Discover Your Sound"}

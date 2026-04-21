@@ -1,5 +1,6 @@
 import { PlaylistCard } from "./PlaylistCard";
 import { Skeleton } from "./ui/skeleton";
+import { Folder } from "lucide-react";
 import type { Playlist } from "../../types";
 
 interface BentoGridProps {
@@ -73,7 +74,7 @@ export function BentoGrid({
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-              <span className="text-3xl">📁</span>
+              <Folder className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
               No playlists in this folder

@@ -94,8 +94,8 @@ export default function NewFolderPage() {
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <FolderPlus className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+            <div className="w-20 h-20 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FolderPlus className="w-10 h-10 text-[#1DB954] dark:text-[#1DB954]" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to create folders
@@ -105,7 +105,7 @@ export default function NewFolderPage() {
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link to="/login">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
+                <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6">
                   Sign in
                 </Button>
               </Link>
@@ -124,7 +124,7 @@ export default function NewFolderPage() {
   const cardClass =
     "bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6";
   const inputClass =
-    "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500";
+    "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500";
   const labelClass =
     "block text-sm font-semibold text-gray-900 dark:text-gray-100";
 
@@ -226,7 +226,7 @@ export default function NewFolderPage() {
                         onClick={() => setSelectedIcon(icon)}
                         className={`aspect-square rounded-lg text-2xl flex items-center justify-center transition-all ${
                           selectedIcon === icon
-                            ? "bg-indigo-100 dark:bg-indigo-900/40 ring-2 ring-indigo-500 scale-105"
+                            ? "bg-[#1DB954]/10 dark:bg-[#1DB954]/40 ring-2 ring-[#1DB954] scale-105"
                             : "bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105"
                         }`}
                       >
@@ -329,7 +329,7 @@ export default function NewFolderPage() {
               <Button
                 type="submit"
                 disabled={!name.trim() || isLoading}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 disabled:opacity-50"
+                className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-8 disabled:opacity-50"
               >
                 {isLoading ? (
                   <>

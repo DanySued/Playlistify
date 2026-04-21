@@ -69,9 +69,9 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex">
       {/* ── Left branding panel ── */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] rounded-full bg-indigo-400/20 blur-3xl pointer-events-none" />
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0f5a2a] via-[#1DB954] to-[#0d4a22] flex-col justify-between p-12 relative overflow-hidden">
+        <div className="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full bg-[#1DB954]/20 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] rounded-full bg-[#1DB954]/20 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -125,7 +125,7 @@ export default function SignupPage() {
           </Link>
 
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Music className="w-7 h-7 text-indigo-600" />
+            <Music className="w-7 h-7 text-[#1DB954]" />
             <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
               Playlistify
             </span>
@@ -187,7 +187,7 @@ export default function SignupPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Rivera"
                 disabled={isDisabled}
-                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all"
               />
             </div>
 
@@ -201,7 +201,7 @@ export default function SignupPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 disabled={isDisabled}
-                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all"
               />
             </div>
 
@@ -216,7 +216,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
                   disabled={isDisabled}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 pr-12 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 pr-12 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
@@ -246,11 +246,11 @@ export default function SignupPage() {
                 className="text-sm text-gray-600 dark:text-gray-300"
               >
                 I agree to the{" "}
-                <a href="#" className="text-indigo-600 hover:underline">
+                <a href="#" className="text-[#1DB954] hover:underline">
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a href="#" className="text-indigo-600 hover:underline">
+                <a href="#" className="text-[#1DB954] hover:underline">
                   Privacy Policy
                 </a>
               </label>
@@ -276,7 +276,7 @@ export default function SignupPage() {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-indigo-600 font-semibold hover:text-indigo-500"
+              className="text-[#1DB954] font-semibold hover:text-indigo-500"
             >
               Sign in
             </Link>

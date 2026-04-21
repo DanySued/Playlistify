@@ -15,7 +15,7 @@ export function Navigation() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <Music className="w-8 h-8 text-indigo-600" />
+            <Music className="w-8 h-8 text-[#1DB954]" />
             <span className="font-semibold text-xl text-gray-900 dark:text-gray-100">
               Playlistify
             </span>
@@ -24,7 +24,7 @@ export function Navigation() {
           {/* Center action */}
           {isAuthenticated ? (
             <Button
-              className="hidden sm:flex bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-sm items-center gap-2"
+              className="hidden sm:flex bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6 py-2 rounded-lg shadow-sm items-center gap-2"
               onClick={() => navigate("/new-playlist")}
             >
               <Plus className="w-4 h-4" />
@@ -32,7 +32,7 @@ export function Navigation() {
             </Button>
           ) : (
             <Link to="/login" className="hidden sm:block">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-sm flex items-center gap-2">
+              <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6 py-2 rounded-lg shadow-sm flex items-center gap-2">
                 <LogIn className="w-4 h-4" />
                 Sign in
               </Button>
@@ -58,7 +58,7 @@ export function Navigation() {
             <button
               aria-label="View profile"
               onClick={() => navigate("/profile")}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center hover:shadow-lg transition-shadow text-white font-bold text-sm"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1DB954] to-[#1aa34a] flex items-center justify-center hover:shadow-lg transition-shadow text-white font-bold text-sm"
             >
               {isAuthenticated && user?.initials ? (
                 user.initials

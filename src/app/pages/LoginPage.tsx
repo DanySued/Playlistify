@@ -56,9 +56,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* ── Left branding panel ── */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] rounded-full bg-indigo-400/20 blur-3xl pointer-events-none" />
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0f5a2a] via-[#1DB954] to-[#0d4a22] flex-col justify-between p-12 relative overflow-hidden">
+        <div className="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full bg-[#1DB954]/20 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] rounded-full bg-[#1DB954]/20 blur-3xl pointer-events-none" />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
@@ -99,7 +99,7 @@ export default function LoginPage() {
             {["AR", "JM", "SK", "TL"].map((init) => (
               <div
                 key={init}
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-xs font-semibold text-white border-2 border-indigo-900"
+                className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1DB954] to-[#1aa34a] flex items-center justify-center text-xs font-semibold text-white border-2 border-[#0d4a22]"
               >
                 {init}
               </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Music className="w-7 h-7 text-indigo-600" />
+            <Music className="w-7 h-7 text-[#1DB954]" />
             <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
               Playlistify
             </span>
@@ -198,7 +198,7 @@ export default function LoginPage() {
                 </label>
                 <button
                   type="button"
-                  className="text-sm text-indigo-600 hover:text-indigo-500"
+                  className="text-sm text-[#1DB954] hover:text-[#1aa34a]"
                 >
                   Forgot password?
                 </button>
@@ -210,7 +210,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   disabled={isDisabled}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 pr-12 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 pr-12 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
@@ -229,7 +229,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isDisabled}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold"
+              className="w-full bg-[#1DB954] hover:bg-[#1aa34a] text-white rounded-xl font-semibold"
             >
               {emailLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -246,7 +246,7 @@ export default function LoginPage() {
             New to Playlistify?{" "}
             <Link
               to="/signup"
-              className="text-indigo-600 font-semibold hover:text-indigo-500"
+              className="text-[#1DB954] font-semibold hover:text-[#1aa34a]"
             >
               Create an account
             </Link>

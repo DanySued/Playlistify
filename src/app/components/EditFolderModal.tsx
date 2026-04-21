@@ -243,7 +243,7 @@ export function EditFolderModal({
           <Button
             onClick={handleSave}
             disabled={!name.trim()}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Save Changes
           </Button>

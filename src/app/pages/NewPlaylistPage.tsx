@@ -89,8 +89,8 @@ export default function NewPlaylistPage() {
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Music className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+            <div className="w-20 h-20 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="w-10 h-10 text-[#1DB954] dark:text-[#1DB954]" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to create playlists
@@ -100,7 +100,7 @@ export default function NewPlaylistPage() {
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link to="/login">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
+                <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6">
                   Sign in
                 </Button>
               </Link>
@@ -128,7 +128,7 @@ export default function NewPlaylistPage() {
             : "h-48";
 
   const inputClass =
-    "w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all";
+    "w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:border-transparent transition-all";
   const cardClass =
     "bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6";
   const labelClass =
@@ -149,7 +149,7 @@ export default function NewPlaylistPage() {
               <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </Link>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#1DB954] to-[#1aa34a] bg-clip-text text-transparent">
                 New Playlist
               </h1>
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
@@ -174,7 +174,7 @@ export default function NewPlaylistPage() {
                       onChange={handleImageChange}
                       className="hidden"
                     />
-                    <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 flex items-center justify-center relative border-2 border-dashed border-gray-200 dark:border-gray-600 group-hover:border-indigo-400 transition-colors">
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-[#1DB954]/10 to-[#1aa34a]/10 dark:from-[#1DB954]/30 dark:to-[#1aa34a]/30 flex items-center justify-center relative border-2 border-dashed border-gray-200 dark:border-gray-600 group-hover:border-[#1DB954] transition-colors">
                       {imagePreview ? (
                         <>
                           <img
@@ -188,7 +188,7 @@ export default function NewPlaylistPage() {
                         </>
                       ) : (
                         <div className="text-center p-8">
-                          <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <Upload className="w-8 h-8 text-indigo-400" />
                           </div>
                           <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -209,7 +209,7 @@ export default function NewPlaylistPage() {
                     Bento Preview
                   </h2>
                   <div
-                    className={`relative rounded-xl overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 w-full ${previewHeight}`}
+                    className={`relative rounded-xl overflow-hidden bg-gradient-to-br from-[#1DB954] to-[#1aa34a] w-full ${previewHeight}`}
                   >
                     {imagePreview && (
                       <img
@@ -310,7 +310,7 @@ export default function NewPlaylistPage() {
                       onClick={() => setIsPublic(true)}
                       className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
                         isPublic
-                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                          ? "border-[#1DB954] bg-[#1DB954]/10 dark:bg-[#1DB954]/20"
                           : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                     >
@@ -333,7 +333,7 @@ export default function NewPlaylistPage() {
                       onClick={() => setIsPublic(false)}
                       className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
                         !isPublic
-                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                          ? "border-[#1DB954] bg-[#1DB954]/10 dark:bg-[#1DB954]/20"
                           : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                     >
@@ -367,7 +367,7 @@ export default function NewPlaylistPage() {
                         onClick={() => setSize(value)}
                         className={`py-2.5 px-3 rounded-xl text-sm font-medium border-2 transition-all ${
                           size === value
-                            ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600"
+                            ? "border-[#1DB954] bg-[#1DB954]/10 dark:bg-[#1DB954]/20 text-indigo-600"
                             : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500"
                         }`}
                       >
@@ -390,7 +390,7 @@ export default function NewPlaylistPage() {
                         onClick={() => toggleGenre(genre)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                           selectedGenres.includes(genre)
-                            ? "bg-indigo-600 border-indigo-600 text-white"
+                            ? "bg-indigo-600 border-[#1DB954] text-white"
                             : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-indigo-300 hover:text-indigo-600"
                         }`}
                       >
@@ -490,9 +490,9 @@ export default function NewPlaylistPage() {
                     <Link to="/new-folder">
                       <button
                         type="button"
-                        className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all text-gray-600 dark:text-gray-300 hover:text-indigo-600"
+                        className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-[#1DB954] hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all text-gray-600 dark:text-gray-300 hover:text-indigo-600"
                       >
-                        <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[#1DB954]/10 dark:bg-[#1DB954]/30 rounded-lg flex items-center justify-center">
                           <Plus className="w-4 h-4 text-indigo-600" />
                         </div>
                         <span className="text-sm font-medium">
@@ -507,7 +507,7 @@ export default function NewPlaylistPage() {
                 <Button
                   type="submit"
                   disabled={isLoading || !name.trim()}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-6 rounded-xl font-semibold text-base shadow-md disabled:opacity-50"
+                  className="w-full bg-gradient-to-r from-[#1DB954] to-[#1aa34a] hover:from-indigo-700 hover:to-purple-700 text-white py-6 rounded-xl font-semibold text-base shadow-md disabled:opacity-50"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
