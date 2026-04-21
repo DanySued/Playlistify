@@ -1,7 +1,9 @@
 const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string;
 
 function getRedirectUri(): string {
-  return import.meta.env.VITE_REDIRECT_URI || `${window.location.origin}/callback`;
+  return (
+    import.meta.env.VITE_REDIRECT_URI || `${window.location.origin}/callback`
+  );
 }
 
 const SCOPES = [
@@ -11,6 +13,7 @@ const SCOPES = [
   "playlist-read-collaborative",
   "playlist-modify-public",
   "playlist-modify-private",
+  "ugc-image-upload",
 ].join(" ");
 
 function generateCodeVerifier(length: number): string {
@@ -19,7 +22,7 @@ function generateCodeVerifier(length: number): string {
   const values = crypto.getRandomValues(new Uint8Array(length));
   return Array.from(values).reduce(
     (acc, x) => acc + possible[x % possible.length],
-    ""
+    "",
   );
 }
 
@@ -59,7 +62,7 @@ export interface TokenResponse {
 }
 
 export async function exchangeCodeForToken(
-  code: string
+  code: string,
 ): Promise<TokenResponse> {
   const verifier = localStorage.getItem("pkce_verifier");
   if (!verifier) throw new Error("No PKCE verifier found");
@@ -80,7 +83,7 @@ export async function exchangeCodeForToken(
     const err = await res.json().catch(() => ({}));
     throw new Error(
       (err as { error_description?: string }).error_description ||
-        "Token exchange failed"
+        "Token exchange failed",
     );
   }
 
@@ -89,7 +92,7 @@ export async function exchangeCodeForToken(
 }
 
 export async function refreshAccessToken(
-  refreshToken: string
+  refreshToken: string,
 ): Promise<TokenResponse> {
   const res = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
@@ -115,7 +118,7 @@ export interface SpotifyAPIUser {
 }
 
 export async function getSpotifyUser(
-  accessToken: string
+  accessToken: string,
 ): Promise<SpotifyAPIUser> {
   const res = await fetch("https://api.spotify.com/v1/me", {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -136,7 +139,7 @@ export interface SpotifyAPIPlaylist {
 }
 
 export async function getSpotifyPlaylists(
-  accessToken: string
+  accessToken: string,
 ): Promise<SpotifyAPIPlaylist[]> {
   const res = await fetch("https://api.spotify.com/v1/me/playlists?limit=50", {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -144,4 +147,56 @@ export async function getSpotifyPlaylists(
   if (!res.ok) throw new Error("Failed to fetch playlists");
   const data = await res.json();
   return data.items ?? [];
+}
+
+export async function updatePlaylist(
+  accessToken: string,
+  playlistId: string,
+  updates: { name?: string; description?: string },
+): Promise<void> {
+  const res = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updates),
+    },
+  );
+  if (!res.ok) throw new Error("Failed to update playlist");
+}
+
+export async function uploadPlaylistCover(
+  accessToken: string,
+  playlistId: string,
+  base64Jpeg: string,
+): Promise<void> {
+  const res = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/images`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "image/jpeg",
+      },
+      body: base64Jpeg,
+    },
+  );
+  if (!res.ok) throw new Error("Failed to upload playlist cover");
+}
+
+export async function unfollowPlaylist(
+  accessToken: string,
+  playlistId: string,
+): Promise<void> {
+  const res = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/followers`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
+  if (!res.ok) throw new Error("Failed to delete playlist");
 }

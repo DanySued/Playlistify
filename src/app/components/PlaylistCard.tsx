@@ -1,12 +1,10 @@
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Pencil } from "lucide-react";
 import type { Playlist } from "../../types";
 
 interface PlaylistCardProps {
   playlist: Playlist;
-  editMode?: boolean;
-  onEditPlaylist?: (playlist: Playlist) => void;
+  onCardClick: (playlist: Playlist) => void;
 }
 
 const sizeClasses: Record<Playlist["size"], string> = {
@@ -32,25 +30,19 @@ const variants = {
   },
 };
 
-export function PlaylistCard({
-  playlist,
-  editMode = false,
-  onEditPlaylist,
-}: PlaylistCardProps) {
-  const { name, description, imageUrl, spotifyUrl, size = "medium" } = playlist;
+export function PlaylistCard({ playlist, onCardClick }: PlaylistCardProps) {
+  const { name, description, imageUrl, size = "medium" } = playlist;
 
   return (
-    <motion.a
-      href={spotifyUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.div
+      role="button"
+      onClick={() => onCardClick(playlist)}
       className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer h-full ${sizeClasses[size]}`}
       variants={variants.card}
       initial="rest"
       whileHover="hover"
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {/* Background Image */}
       <div className="absolute inset-0">
         <ImageWithFallback
           src={imageUrl}
@@ -60,7 +52,6 @@ export function PlaylistCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
       </div>
 
-      {/* Content */}
       <div className="absolute inset-0 p-6 flex flex-col justify-end">
         <h3 className="text-white font-bold text-2xl mb-2">{name}</h3>
         <motion.p
@@ -72,32 +63,11 @@ export function PlaylistCard({
         </motion.p>
       </div>
 
-      {/* Hover Border Glow */}
       <motion.div
         className="absolute inset-0 border-2 rounded-xl pointer-events-none"
         variants={variants.border}
         transition={{ duration: 0.3 }}
       />
-
-      {/* Edit Button (appears in edit mode) */}
-      <AnimatePresence>
-        {editMode && onEditPlaylist && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.2 }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onEditPlaylist(playlist);
-            }}
-            className="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-lg flex items-center justify-center transition-colors shadow-lg z-10"
-          >
-            <Pencil className="w-4 h-4 text-gray-700" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </motion.a>
+    </motion.div>
   );
 }

@@ -7,11 +7,9 @@ interface BentoGridProps {
   playlists: Playlist[];
   isLoading: boolean;
   folderName?: string | null;
-  editMode?: boolean;
-  onEditPlaylist?: (playlist: Playlist) => void;
+  onCardClick: (playlist: Playlist) => void;
 }
 
-// Mirror the size order of mockPlaylists for skeletons
 const skeletonSizes: Playlist["size"][] = [
   "large",
   "medium",
@@ -39,8 +37,7 @@ export function BentoGrid({
   playlists,
   isLoading,
   folderName,
-  editMode,
-  onEditPlaylist,
+  onCardClick,
 }: BentoGridProps) {
   return (
     <div>
@@ -67,8 +64,7 @@ export function BentoGrid({
             <PlaylistCard
               key={playlist.id}
               playlist={playlist}
-              editMode={editMode}
-              onEditPlaylist={onEditPlaylist}
+              onCardClick={onCardClick}
             />
           ))
         ) : (

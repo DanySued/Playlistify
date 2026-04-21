@@ -13,6 +13,8 @@ import {
   refreshAccessToken,
   getSpotifyUser,
   getSpotifyPlaylists,
+  updatePlaylist as spotifyUpdatePlaylist,
+  unfollowPlaylist as spotifyUnfollowPlaylist,
   type SpotifyAPIPlaylist,
 } from "../../lib/spotify";
 
@@ -37,6 +39,11 @@ interface AuthContextType {
   loginWithEmail: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  updatePlaylist: (
+    id: string,
+    updates: { name?: string; description?: string; imageUrl?: string },
+  ) => Promise<void>;
+  deletePlaylist: (id: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -50,10 +57,7 @@ function assignSize(index: number): Playlist["size"] {
   return "medium";
 }
 
-function apiPlaylistToLocal(
-  p: SpotifyAPIPlaylist,
-  index: number
-): Playlist {
+function apiPlaylistToLocal(p: SpotifyAPIPlaylist, index: number): Playlist {
   return {
     id: p.id,
     name: p.name,
@@ -75,7 +79,11 @@ function makeInitials(name: string): string {
 
 // ─── Persist helpers ───────────────────────────────────────────────────────
 
-function saveTokens(accessToken: string, refreshToken: string, expiresAt: number) {
+function saveTokens(
+  accessToken: string,
+  refreshToken: string,
+  expiresAt: number,
+) {
   localStorage.setItem("spotify_access_token", accessToken);
   localStorage.setItem("spotify_refresh_token", refreshToken);
   localStorage.setItem("spotify_expires_at", String(expiresAt));
@@ -102,8 +110,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return saved ? (JSON.parse(saved) as Playlist[]) : [];
   });
 
-  const [accessToken, setAccessToken] = useState<string | null>(
-    () => localStorage.getItem("spotify_access_token")
+  const [accessToken, setAccessToken] = useState<string | null>(() =>
+    localStorage.getItem("spotify_access_token"),
   );
 
   // ── Proactive token refresh ──────────────────────────────────────────────
@@ -207,6 +215,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(null);
   };
 
+  // ── Update playlist (name, description, imageUrl) ────────────────────────
+  const updatePlaylist = async (
+    id: string,
+    updates: { name?: string; description?: string; imageUrl?: string },
+  ) => {
+    if (accessToken) {
+      const spotifyUpdates: { name?: string; description?: string } = {};
+      if (updates.name !== undefined) spotifyUpdates.name = updates.name;
+      if (updates.description !== undefined)
+        spotifyUpdates.description = updates.description;
+      if (Object.keys(spotifyUpdates).length > 0)
+        await spotifyUpdatePlaylist(accessToken, id, spotifyUpdates);
+    }
+    setSpotifyPlaylists((prev) => {
+      const next = prev.map((p) => (p.id === id ? { ...p, ...updates } : p));
+      localStorage.setItem("spotify_playlists", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // ── Delete (unfollow) playlist ───────────────────────────────────────────
+  const deletePlaylist = async (id: string) => {
+    if (accessToken) await spotifyUnfollowPlaylist(accessToken, id);
+    setSpotifyPlaylists((prev) => {
+      const next = prev.filter((p) => p.id !== id);
+      localStorage.setItem("spotify_playlists", JSON.stringify(next));
+      return next;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -219,6 +257,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithEmail,
         signup,
         logout,
+        updatePlaylist,
+        deletePlaylist,
       }}
     >
       {children}

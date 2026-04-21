@@ -6,7 +6,7 @@ import { FolderSelector } from "../components/FolderSelector";
 import { Footer } from "../components/Footer";
 import { Button } from "../components/ui/button";
 import { EditFolderModal } from "../components/EditFolderModal";
-import { ManagePlaylistFolderModal } from "../components/ManagePlaylistFolderModal";
+import { PlaylistToolsPanel } from "../components/PlaylistToolsPanel";
 import { AlertCircle } from "lucide-react";
 import type { Playlist } from "../../types";
 import { mockPlaylists } from "../../data/playlists";
@@ -22,15 +22,21 @@ function SpotifyIcon() {
 }
 
 export default function HomePage() {
-  const { isAuthenticated, spotifyPlaylists, user } = useAuth();
+  const {
+    isAuthenticated,
+    spotifyPlaylists,
+    user,
+    accessToken,
+    updatePlaylist,
+    deletePlaylist,
+  } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [folders, setFolders] = useState(defaultFolders);
   const [editingFolder, setEditingFolder] = useState<any | null>(null);
-  const [editMode, setEditMode] = useState(false);
-  const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
+  const [activePlaylist, setActivePlaylist] = useState<Playlist | null>(null);
 
   const loadPlaylists = useCallback(async () => {
     setPlaylists([]);
@@ -54,15 +60,11 @@ export default function HomePage() {
     loadPlaylists();
   }, [loadPlaylists]);
 
-  // Filter playlists by selected folder
   const filteredPlaylists = useMemo(() => {
-    if (selectedFolderId === null) {
-      return playlists;
-    }
+    if (selectedFolderId === null) return playlists;
     return playlists.filter((p) => p.folderId === selectedFolderId);
   }, [playlists, selectedFolderId]);
 
-  // Calculate playlist counts per folder
   const playlistCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     folders.forEach((folder) => {
@@ -73,11 +75,9 @@ export default function HomePage() {
     return counts;
   }, [playlists, folders]);
 
-  // Get current folder name for display
   const currentFolderName = useMemo(() => {
     if (selectedFolderId === null) return null;
-    const folder = folders.find((f) => f.id === selectedFolderId);
-    return folder ? folder.name : null;
+    return folders.find((f) => f.id === selectedFolderId)?.name ?? null;
   }, [selectedFolderId, folders]);
 
   const handleUpdateFolder = (
@@ -94,11 +94,11 @@ export default function HomePage() {
   const handleDeleteFolder = (folderId: string) => {
     setFolders((prev) => prev.filter((f) => f.id !== folderId));
     setPlaylists((prev) =>
-      prev.map((p) => (p.folderId === folderId ? { ...p, folderId: null } : p)),
+      prev.map((p) =>
+        p.folderId === folderId ? { ...p, folderId: undefined } : p,
+      ),
     );
-    if (selectedFolderId === folderId) {
-      setSelectedFolderId(null);
-    }
+    if (selectedFolderId === folderId) setSelectedFolderId(null);
   };
 
   const handleUpdatePlaylistFolder = (
@@ -106,8 +106,43 @@ export default function HomePage() {
     folderId: string | null,
   ) => {
     setPlaylists((prev) =>
-      prev.map((p) => (p.id === playlistId ? { ...p, folderId } : p)),
+      prev.map((p) =>
+        p.id === playlistId ? { ...p, folderId: folderId ?? undefined } : p,
+      ),
     );
+    if (activePlaylist?.id === playlistId) {
+      setActivePlaylist((prev) =>
+        prev ? { ...prev, folderId: folderId ?? undefined } : prev,
+      );
+    }
+  };
+
+  const handleCoverUpdated = (playlistId: string, imageUrl: string) => {
+    setPlaylists((prev) =>
+      prev.map((p) => (p.id === playlistId ? { ...p, imageUrl } : p)),
+    );
+    setActivePlaylist((prev) =>
+      prev?.id === playlistId ? { ...prev, imageUrl } : prev,
+    );
+  };
+
+  const handleUpdatePlaylist = async (
+    id: string,
+    updates: { name?: string; description?: string },
+  ) => {
+    await updatePlaylist(id, updates);
+    setPlaylists((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updates } : p)),
+    );
+    setActivePlaylist((prev) =>
+      prev?.id === id ? { ...prev, ...updates } : prev,
+    );
+  };
+
+  const handleDeletePlaylist = async (id: string) => {
+    await deletePlaylist(id);
+    setPlaylists((prev) => prev.filter((p) => p.id !== id));
+    setActivePlaylist(null);
   };
 
   return (
@@ -116,7 +151,6 @@ export default function HomePage() {
 
       <main className="pt-24 pb-16">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
-          {/* Header */}
           <div className="mb-12">
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#1DB954] to-[#1aa34a] bg-clip-text text-transparent">
               {isAuthenticated
@@ -126,10 +160,9 @@ export default function HomePage() {
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
               {isAuthenticated && spotifyPlaylists.length > 0
                 ? `${spotifyPlaylists.length} playlists imported from your Spotify account.`
-                : "Explore curated playlists across all genres. Click any playlist to open it in Spotify."}
+                : "Explore curated playlists across all genres. Tap any playlist to customize it."}
             </p>
 
-            {/* Spotify connect nudge for logged-in users without Spotify */}
             {isAuthenticated && !spotifyPlaylists.length && (
               <div className="mt-6 inline-flex items-center gap-3 bg-[#1DB954]/10 border border-[#1DB954]/30 rounded-xl px-5 py-3">
                 <span className="text-[#1DB954]">
@@ -150,7 +183,6 @@ export default function HomePage() {
             )}
           </div>
 
-          {/* Error State */}
           {error && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
@@ -183,15 +215,14 @@ export default function HomePage() {
                 selectedFolderId={selectedFolderId}
                 onSelectFolder={setSelectedFolderId}
                 onEditFolder={setEditingFolder}
-                editMode={editMode}
-                onToggleEditMode={() => setEditMode(!editMode)}
+                editMode={false}
+                onToggleEditMode={() => {}}
               />
               <BentoGrid
                 playlists={filteredPlaylists}
                 isLoading={isLoading}
                 folderName={currentFolderName}
-                editMode={editMode}
-                onEditPlaylist={setEditingPlaylist}
+                onCardClick={setActivePlaylist}
               />
             </>
           )}
@@ -200,7 +231,6 @@ export default function HomePage() {
 
       <Footer />
 
-      {/* Modals */}
       {editingFolder && (
         <EditFolderModal
           folder={editingFolder}
@@ -210,12 +240,16 @@ export default function HomePage() {
         />
       )}
 
-      {editingPlaylist && (
-        <ManagePlaylistFolderModal
-          playlist={editingPlaylist}
+      {activePlaylist && (
+        <PlaylistToolsPanel
+          playlist={activePlaylist}
           folders={folders}
-          onClose={() => setEditingPlaylist(null)}
-          onUpdate={handleUpdatePlaylistFolder}
+          accessToken={accessToken}
+          onClose={() => setActivePlaylist(null)}
+          onCoverUpdated={handleCoverUpdated}
+          onUpdatePlaylist={handleUpdatePlaylist}
+          onDeletePlaylist={handleDeletePlaylist}
+          onUpdateFolder={handleUpdatePlaylistFolder}
         />
       )}
     </div>
