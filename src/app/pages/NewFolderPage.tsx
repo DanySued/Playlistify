@@ -20,12 +20,54 @@ const PRESET_COLORS = [
 ];
 
 const PRESET_ICONS = [
-  "🎵", "🎸", "🎹", "🎧", "🎤", "🎺", "🎷", "🎻",
-  "💿", "📀", "🎼", "🎶", "🔊", "📻", "🎙️", "🪕",
-  "🥁", "🪘", "🎚️", "🎛️", "💫", "⭐", "🌟", "✨",
-  "🔥", "💥", "⚡", "💎", "🌈", "🌊", "🌸", "🍀",
-  "☀️", "🌙", "⛈️", "❄️", "🎯", "🎨", "🎭", "🎪",
-  "🚀", "✈️", "🏃", "💪", "🧘", "🏋️", "⚽", "🏀",
+  "🎵",
+  "🎸",
+  "🎹",
+  "🎧",
+  "🎤",
+  "🎺",
+  "🎷",
+  "🎻",
+  "💿",
+  "📀",
+  "🎼",
+  "🎶",
+  "🔊",
+  "📻",
+  "🎙️",
+  "🪕",
+  "🥁",
+  "🪘",
+  "🎚️",
+  "🎛️",
+  "💫",
+  "⭐",
+  "🌟",
+  "✨",
+  "🔥",
+  "💥",
+  "⚡",
+  "💎",
+  "🌈",
+  "🌊",
+  "🌸",
+  "🍀",
+  "☀️",
+  "🌙",
+  "⛈️",
+  "❄️",
+  "🎯",
+  "🎨",
+  "🎭",
+  "🎪",
+  "🚀",
+  "✈️",
+  "🏃",
+  "💪",
+  "🧘",
+  "🏋️",
+  "⚽",
+  "🏀",
 ];
 
 export default function NewFolderPage() {
@@ -48,17 +90,17 @@ export default function NewFolderPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <FolderPlus className="w-10 h-10 text-indigo-600" />
+            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FolderPlus className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to create folders
             </h2>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Create an account to organize your playlists into folders.
             </p>
             <div className="flex items-center justify-center gap-4">
@@ -79,8 +121,15 @@ export default function NewFolderPage() {
     );
   }
 
+  const cardClass =
+    "bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6";
+  const inputClass =
+    "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500";
+  const labelClass =
+    "block text-sm font-semibold text-gray-900 dark:text-gray-100";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
       <Navigation />
 
       <main className="pt-24 pb-16">
@@ -89,15 +138,15 @@ export default function NewFolderPage() {
           <div className="mb-8">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Link>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Create New Folder
             </h1>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Organize your playlists into custom folders
             </p>
           </div>
@@ -107,8 +156,8 @@ export default function NewFolderPage() {
               {/* Main Form - Left Column */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Folder Name */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                <div className={cardClass}>
+                  <label className={`${labelClass} mb-2`}>
                     Folder Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -116,30 +165,26 @@ export default function NewFolderPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g., Workout Playlists"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                     required
                   />
                 </div>
 
                 {/* Description */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Description
-                  </label>
+                <div className={cardClass}>
+                  <label className={`${labelClass} mb-2`}>Description</label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe what kind of playlists belong in this folder..."
                     rows={4}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                    className={`${inputClass} resize-none`}
                   />
                 </div>
 
                 {/* Color Selection */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-4">
-                    Folder Color
-                  </label>
+                <div className={cardClass}>
+                  <label className={`${labelClass} mb-4`}>Folder Color</label>
                   <div className="grid grid-cols-5 gap-3">
                     {PRESET_COLORS.map((color) => (
                       <button
@@ -151,7 +196,7 @@ export default function NewFolderPage() {
                         <div
                           className={`w-full aspect-square rounded-xl transition-all ${
                             selectedColor === color.value
-                              ? "ring-2 ring-offset-2 ring-gray-900 scale-105"
+                              ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100 scale-105"
                               : "hover:scale-105"
                           }`}
                           style={{ backgroundColor: color.value }}
@@ -162,7 +207,7 @@ export default function NewFolderPage() {
                             </div>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1 text-center">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
                           {color.name}
                         </p>
                       </button>
@@ -171,10 +216,8 @@ export default function NewFolderPage() {
                 </div>
 
                 {/* Icon Selection */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-4">
-                    Folder Icon
-                  </label>
+                <div className={cardClass}>
+                  <label className={`${labelClass} mb-4`}>Folder Icon</label>
                   <div className="grid grid-cols-8 gap-2">
                     {PRESET_ICONS.map((icon) => (
                       <button
@@ -183,8 +226,8 @@ export default function NewFolderPage() {
                         onClick={() => setSelectedIcon(icon)}
                         className={`aspect-square rounded-lg text-2xl flex items-center justify-center transition-all ${
                           selectedIcon === icon
-                            ? "bg-indigo-100 ring-2 ring-indigo-500 scale-105"
-                            : "bg-gray-50 hover:bg-gray-100 hover:scale-105"
+                            ? "bg-indigo-100 dark:bg-indigo-900/40 ring-2 ring-indigo-500 scale-105"
+                            : "bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105"
                         }`}
                       >
                         {icon}
@@ -197,14 +240,16 @@ export default function NewFolderPage() {
               {/* Preview - Right Column */}
               <div className="lg:col-span-1">
                 <div className="sticky top-24">
-                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                  <div className={cardClass}>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
                       Preview
                     </h3>
-                    
+
                     {/* Folder Button Preview */}
                     <div className="mb-6">
-                      <p className="text-xs text-gray-500 mb-2">As Button</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        As Button
+                      </p>
                       <button
                         type="button"
                         className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm shadow-md border"
@@ -226,7 +271,9 @@ export default function NewFolderPage() {
 
                     {/* Folder Card Preview */}
                     <div className="mb-6">
-                      <p className="text-xs text-gray-500 mb-2">As Card</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        As Card
+                      </p>
                       <div
                         className="w-full p-4 rounded-xl border-2 transition-all"
                         style={{
@@ -242,13 +289,13 @@ export default function NewFolderPage() {
                             {selectedIcon}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-gray-900 truncate">
+                            <div className="font-semibold text-gray-900 dark:text-gray-100 truncate">
                               {name || "Folder Name"}
                             </div>
                           </div>
                         </div>
                         {description && (
-                          <p className="text-xs text-gray-600 line-clamp-2">
+                          <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
                             {description}
                           </p>
                         )}
@@ -256,8 +303,8 @@ export default function NewFolderPage() {
                     </div>
 
                     {/* Info */}
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-xs text-gray-500">
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         This folder will appear in your folder list and you can
                         assign playlists to it.
                       </p>
@@ -268,7 +315,7 @@ export default function NewFolderPage() {
             </div>
 
             {/* Submit Buttons */}
-            <div className="flex items-center gap-4 justify-end bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className={`${cardClass} flex items-center gap-4 justify-end`}>
               <Link to="/">
                 <Button
                   type="button"

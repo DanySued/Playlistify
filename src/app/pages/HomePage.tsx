@@ -41,7 +41,7 @@ export default function HomePage() {
       setPlaylists(
         isAuthenticated && spotifyPlaylists.length > 0
           ? spotifyPlaylists
-          : mockPlaylists
+          : mockPlaylists,
       );
     } catch {
       setError(true);
@@ -67,7 +67,7 @@ export default function HomePage() {
     const counts: Record<string, number> = {};
     folders.forEach((folder) => {
       counts[folder.id] = playlists.filter(
-        (p) => p.folderId === folder.id
+        (p) => p.folderId === folder.id,
       ).length;
     });
     return counts;
@@ -80,30 +80,38 @@ export default function HomePage() {
     return folder ? folder.name : null;
   }, [selectedFolderId, folders]);
 
-  const handleUpdateFolder = (folderId: string, name: string, emoji: string, color: string) => {
-    setFolders(prev =>
-      prev.map(f => f.id === folderId ? { ...f, name, emoji, color } : f)
+  const handleUpdateFolder = (
+    folderId: string,
+    name: string,
+    emoji: string,
+    color: string,
+  ) => {
+    setFolders((prev) =>
+      prev.map((f) => (f.id === folderId ? { ...f, name, emoji, color } : f)),
     );
   };
 
   const handleDeleteFolder = (folderId: string) => {
-    setFolders(prev => prev.filter(f => f.id !== folderId));
-    setPlaylists(prev =>
-      prev.map(p => p.folderId === folderId ? { ...p, folderId: null } : p)
+    setFolders((prev) => prev.filter((f) => f.id !== folderId));
+    setPlaylists((prev) =>
+      prev.map((p) => (p.folderId === folderId ? { ...p, folderId: null } : p)),
     );
     if (selectedFolderId === folderId) {
       setSelectedFolderId(null);
     }
   };
 
-  const handleUpdatePlaylistFolder = (playlistId: string, folderId: string | null) => {
-    setPlaylists(prev =>
-      prev.map(p => p.id === playlistId ? { ...p, folderId } : p)
+  const handleUpdatePlaylistFolder = (
+    playlistId: string,
+    folderId: string | null,
+  ) => {
+    setPlaylists((prev) =>
+      prev.map((p) => (p.id === playlistId ? { ...p, folderId } : p)),
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
       <Navigation />
 
       <main className="pt-24 pb-16">
@@ -115,7 +123,7 @@ export default function HomePage() {
                 ? `Welcome back, ${user?.name}!`
                 : "Discover Your Sound"}
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
               {isAuthenticated && spotifyPlaylists.length > 0
                 ? `${spotifyPlaylists.length} playlists imported from your Spotify account.`
                 : "Explore curated playlists across all genres. Click any playlist to open it in Spotify."}
@@ -127,8 +135,8 @@ export default function HomePage() {
                 <span className="text-[#1DB954]">
                   <SpotifyIcon />
                 </span>
-                <span className="text-sm text-gray-700">
-                  <strong className="font-semibold text-gray-900">
+                <span className="text-sm text-gray-700 dark:text-gray-200">
+                  <strong className="font-semibold text-gray-900 dark:text-white">
                     Connect Spotify
                   </strong>{" "}
                   to sync your personal playlists
@@ -145,15 +153,15 @@ export default function HomePage() {
           {/* Error State */}
           {error && (
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
+              <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
                 <AlertCircle className="w-10 h-10 text-red-500" />
               </div>
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                   Failed to load playlists
                 </h2>
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 max-w-md mx-auto">
-                  <p className="text-sm text-red-700">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 max-w-md mx-auto">
+                  <p className="text-sm text-red-700 dark:text-red-300">
                     Something went wrong. Please try again.
                   </p>
                 </div>

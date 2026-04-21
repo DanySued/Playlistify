@@ -13,11 +13,41 @@ interface Folder {
 interface EditFolderModalProps {
   folder: Folder;
   onClose: () => void;
-  onUpdate: (folderId: string, name: string, emoji: string, color: string) => void;
+  onUpdate: (
+    folderId: string,
+    name: string,
+    emoji: string,
+    color: string,
+  ) => void;
   onDelete: (folderId: string) => void;
 }
 
-const EMOJI_OPTIONS = ["🎵", "🎸", "🎹", "🎤", "🎧", "🎼", "🎺", "🎷", "🥁", "🎻", "💪", "🔥", "⚡", "🌊", "🌙", "☀️", "🎯", "💎", "🚀", "✨", "🌟", "💫", "🎨", "🎭"];
+const EMOJI_OPTIONS = [
+  "🎵",
+  "🎸",
+  "🎹",
+  "🎤",
+  "🎧",
+  "🎼",
+  "🎺",
+  "🎷",
+  "🥁",
+  "🎻",
+  "💪",
+  "🔥",
+  "⚡",
+  "🌊",
+  "🌙",
+  "☀️",
+  "🎯",
+  "💎",
+  "🚀",
+  "✨",
+  "🌟",
+  "💫",
+  "🎨",
+  "🎭",
+];
 
 const COLOR_OPTIONS = [
   { name: "Indigo", value: "#6366F1" },
@@ -50,7 +80,11 @@ export function EditFolderModal({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to delete "${folder.name}"? This will remove the folder but keep all playlists.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${folder.name}"? This will remove the folder but keep all playlists.`,
+      )
+    ) {
       return;
     }
     setIsDeleting(true);
@@ -61,23 +95,25 @@ export function EditFolderModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">Edit Folder</h2>
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            Edit Folder
+          </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+            className="w-8 h-8 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg flex items-center justify-center transition-colors"
           >
-            <X className="w-4 h-4 text-gray-600" />
+            <X className="w-4 h-4 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]">
           {/* Preview */}
-          <div className="mb-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
-            <p className="text-xs text-gray-500 mb-3 uppercase tracking-wide font-medium">
+          <div className="mb-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide font-medium">
               Preview
             </p>
             <div className="flex items-center gap-3">
@@ -91,10 +127,10 @@ export function EditFolderModal({
                 {selectedEmoji}
               </div>
               <div>
-                <div className="font-bold text-gray-900">
+                <div className="font-bold text-gray-900 dark:text-gray-100">
                   {name || "Folder Name"}
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
                   {folder.playlistCount}{" "}
                   {folder.playlistCount === 1 ? "playlist" : "playlists"}
                 </div>
@@ -104,7 +140,7 @@ export function EditFolderModal({
 
           {/* Folder Name */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Folder Name
             </label>
             <input
@@ -112,17 +148,17 @@ export function EditFolderModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter folder name"
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               maxLength={30}
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               {name.length}/30 characters
             </p>
           </div>
 
           {/* Icon Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               Choose Icon
             </label>
             <div className="grid grid-cols-8 gap-2">
@@ -132,8 +168,8 @@ export function EditFolderModal({
                   onClick={() => setSelectedEmoji(emoji)}
                   className={`aspect-square flex items-center justify-center text-xl rounded-lg transition-all ${
                     selectedEmoji === emoji
-                      ? "bg-indigo-100 ring-2 ring-indigo-500 scale-110"
-                      : "bg-gray-100 hover:bg-gray-200"
+                      ? "bg-indigo-100 dark:bg-indigo-900/40 ring-2 ring-indigo-500 scale-110"
+                      : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
                   }`}
                 >
                   {emoji}
@@ -144,7 +180,7 @@ export function EditFolderModal({
 
           {/* Color Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               Choose Color
             </label>
             <div className="grid grid-cols-5 gap-3">
@@ -157,7 +193,7 @@ export function EditFolderModal({
                   <div
                     className={`w-full aspect-square rounded-xl transition-all ${
                       selectedColor === color.value
-                        ? "ring-2 ring-offset-2 ring-gray-900 scale-110"
+                        ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100 scale-110"
                         : "hover:scale-105"
                     }`}
                     style={{ backgroundColor: color.value }}
@@ -165,7 +201,7 @@ export function EditFolderModal({
                   {selectedColor === color.value && (
                     <Check className="absolute inset-0 m-auto w-5 h-5 text-white" />
                   )}
-                  <p className="text-xs text-gray-600 mt-1.5 text-center">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1.5 text-center">
                     {color.name}
                   </p>
                 </button>
@@ -174,12 +210,12 @@ export function EditFolderModal({
           </div>
 
           {/* Delete Section */}
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button
               onClick={handleDelete}
               disabled={isDeleting}
               variant="outline"
-              className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+              className="w-full border-red-200 dark:border-red-800 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300"
             >
               {isDeleting ? (
                 <>
@@ -193,14 +229,14 @@ export function EditFolderModal({
                 </>
               )}
             </Button>
-            <p className="text-xs text-gray-500 mt-2 text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
               Playlists in this folder will not be deleted
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3">
           <Button variant="outline" onClick={onClose} className="px-4">
             Cancel
           </Button>

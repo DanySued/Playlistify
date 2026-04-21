@@ -41,17 +41,17 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Music className="w-10 h-10 text-indigo-600" />
+            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to view your profile
             </h2>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Create an account or sign in to manage your playlists.
             </p>
             <div className="flex items-center justify-center gap-4">
@@ -86,27 +86,35 @@ export default function ProfilePage() {
     navigate("/");
   };
 
-  const handleUpdatePlaylistFolder = (playlistId: string, folderId: string | null) => {
-    setPlaylists(prev =>
-      prev.map(p => p.id === playlistId ? { ...p, folderId } : p)
+  const handleUpdatePlaylistFolder = (
+    playlistId: string,
+    folderId: string | null,
+  ) => {
+    setPlaylists((prev) =>
+      prev.map((p) => (p.id === playlistId ? { ...p, folderId } : p)),
     );
   };
 
-  const handleUpdateFolder = (folderId: string, name: string, emoji: string, color: string) => {
-    setFolders(prev =>
-      prev.map(f => f.id === folderId ? { ...f, name, emoji, color } : f)
+  const handleUpdateFolder = (
+    folderId: string,
+    name: string,
+    emoji: string,
+    color: string,
+  ) => {
+    setFolders((prev) =>
+      prev.map((f) => (f.id === folderId ? { ...f, name, emoji, color } : f)),
     );
   };
 
   const handleDeleteFolder = (folderId: string) => {
-    setFolders(prev => prev.filter(f => f.id !== folderId));
-    setPlaylists(prev =>
-      prev.map(p => p.folderId === folderId ? { ...p, folderId: null } : p)
+    setFolders((prev) => prev.filter((f) => f.id !== folderId));
+    setPlaylists((prev) =>
+      prev.map((p) => (p.folderId === folderId ? { ...p, folderId: null } : p)),
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
       <Navigation />
 
       <main className="pt-20 pb-16">
@@ -183,16 +191,16 @@ export default function ProfilePage() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 mt-10 space-y-8">
           {/* Spotify connect CTA */}
           {!user!.spotifyConnected && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 bg-[#1DB954]/10 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <SpotifyIcon className="w-7 h-7 text-[#1DB954]" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
                     Connect Spotify
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Import all your playlists and display them in your bento
                     grid.
                   </p>
@@ -225,27 +233,27 @@ export default function ProfilePage() {
                 icon: ListMusic,
                 label: "Total Playlists",
                 value: spotifyPlaylists.length,
-                color: "text-indigo-600",
-                bg: "bg-indigo-50",
+                color: "text-indigo-600 dark:text-indigo-400",
+                bg: "bg-indigo-50 dark:bg-indigo-900/30",
               },
               {
                 icon: Music,
                 label: "Connected Services",
                 value: user!.spotifyConnected ? 1 : 0,
                 color: "text-[#1DB954]",
-                bg: "bg-green-50",
+                bg: "bg-green-50 dark:bg-green-900/30",
               },
               {
                 icon: Users,
                 label: "Followers",
                 value: user!.followers,
-                color: "text-purple-600",
-                bg: "bg-purple-50",
+                color: "text-purple-600 dark:text-purple-400",
+                bg: "bg-purple-50 dark:bg-purple-900/30",
               },
             ].map(({ icon: Icon, label, value, color, bg }) => (
               <div
                 key={label}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center gap-4"
+                className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex items-center gap-4"
               >
                 <div
                   className={`w-12 h-12 ${bg} rounded-xl flex items-center justify-center`}
@@ -253,10 +261,12 @@ export default function ProfilePage() {
                   <Icon className={`w-6 h-6 ${color}`} />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {value}
                   </div>
-                  <div className="text-sm text-gray-500">{label}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {label}
+                  </div>
                 </div>
               </div>
             ))}
@@ -265,7 +275,7 @@ export default function ProfilePage() {
           {/* Playlists grid */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                 {user!.spotifyConnected
                   ? "Your Spotify Playlists"
                   : "Your Playlists"}
@@ -274,7 +284,7 @@ export default function ProfilePage() {
                 <Link to="/new-folder">
                   <Button
                     variant="outline"
-                    className="text-sm px-4 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
+                    className="text-sm px-4 border-gray-200 dark:border-gray-600 hover:border-indigo-300 hover:text-indigo-600"
                   >
                     <FolderPlus className="w-4 h-4 mr-2" />
                     New Folder
@@ -289,14 +299,14 @@ export default function ProfilePage() {
             </div>
 
             {spotifyPlaylists.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-16 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ListMusic className="w-8 h-8 text-gray-400" />
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-16 text-center">
+                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ListMusic className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   No playlists yet
                 </h3>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                   {user!.spotifyConnected
                     ? "Create your first playlist to get started."
                     : "Connect Spotify to import your playlists, or create a new one."}
@@ -311,13 +321,13 @@ export default function ProfilePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
                 {playlists.map((playlist) => {
                   const folder = folders.find(
-                    (f) => f.id === playlist.folderId
+                    (f) => f.id === playlist.folderId,
                   );
-                  
+
                   return (
                     <div
                       key={playlist.id}
-                      className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 duration-200 relative"
+                      className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 duration-200 relative"
                     >
                       {/* Pencil button */}
                       <button
@@ -325,9 +335,9 @@ export default function ProfilePage() {
                           e.preventDefault();
                           setEditingPlaylist(playlist);
                         }}
-                        className="absolute top-2 right-2 z-10 w-7 h-7 bg-white/90 hover:bg-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-gray-200"
+                        className="absolute top-2 right-2 z-10 w-7 h-7 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-gray-200 dark:border-gray-600"
                       >
-                        <Pencil className="w-3.5 h-3.5 text-gray-600" />
+                        <Pencil className="w-3.5 h-3.5 text-gray-600 dark:text-gray-300" />
                       </button>
 
                       <a
@@ -336,7 +346,7 @@ export default function ProfilePage() {
                         rel="noopener noreferrer"
                         className="block"
                       >
-                        <div className="aspect-square bg-gray-100 overflow-hidden">
+                        <div className="aspect-square bg-gray-100 dark:bg-gray-800 overflow-hidden">
                           <img
                             src={playlist.imageUrl}
                             alt={playlist.name}
@@ -348,13 +358,15 @@ export default function ProfilePage() {
                           />
                         </div>
                         <div className="p-3">
-                          <div className="font-medium text-sm text-gray-900 truncate">
+                          <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
                             {playlist.name}
                           </div>
                           <div className="flex items-center justify-between mt-1">
                             <div className="flex items-center gap-1">
-                              <ExternalLink className="w-3 h-3 text-gray-400" />
-                              <span className="text-xs text-gray-400">Spotify</span>
+                              <ExternalLink className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+                              <span className="text-xs text-gray-400 dark:text-gray-500">
+                                Spotify
+                              </span>
                             </div>
                             {folder && (
                               <div
@@ -393,7 +405,7 @@ export default function ProfilePage() {
           onUpdate={handleUpdatePlaylistFolder}
         />
       )}
-      
+
       {editingFolder && (
         <EditFolderModal
           folder={editingFolder}

@@ -31,42 +31,39 @@ function SpotifyIcon({ className = "" }: { className?: string }) {
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
-  
-  // Account settings state
+
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  
-  // Notification settings state
+
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [playlistUpdates, setPlaylistUpdates] = useState(true);
   const [newFollowers, setNewFollowers] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
-  
-  // Preferences state
+
   const [autoplay, setAutoplay] = useState(true);
   const [highQuality, setHighQuality] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <User className="w-10 h-10 text-indigo-600" />
+            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <User className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to access settings
             </h2>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Create an account or sign in to customize your experience.
             </p>
             <div className="flex items-center justify-center gap-4">
@@ -94,9 +91,12 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete your account? This action cannot be undone.",
+      )
+    )
       return;
-    }
     setIsDeleting(true);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     logout();
@@ -108,82 +108,88 @@ export default function SettingsPage() {
     navigate("/");
   };
 
+  const cardClass =
+    "bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden";
+  const dividerClass =
+    "px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3";
+  const inputClass =
+    "w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500";
+  const labelClass =
+    "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
       <Navigation />
 
       <main className="pt-20 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8">
-          {/* Header */}
           <div className="mb-8">
             <Link
               to="/profile"
-              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Profile
             </Link>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Settings</h1>
-            <p className="text-gray-500">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              Settings
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400">
               Manage your account settings and preferences
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Account Settings */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                  <User className="w-5 h-5 text-indigo-600" />
+            <div className={cardClass}>
+              <div className={dividerClass}>
+                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                  <User className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Account Settings
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Update your personal information
                   </p>
                 </div>
               </div>
               <div className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
-                  </label>
+                  <label className={labelClass}>Full Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
-                  </label>
+                  <label className={labelClass}>Email Address</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Current Password
-                  </label>
+                  <label className={labelClass}>Current Password</label>
                   <div className="relative">
                     <input
                       type={showCurrentPassword ? "text" : "password"}
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="Enter current password"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all pr-10"
+                      className={`${inputClass} pr-10`}
                     />
                     <button
                       type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      onClick={() =>
+                        setShowCurrentPassword(!showCurrentPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       {showCurrentPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -194,21 +200,19 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    New Password
-                  </label>
+                  <label className={labelClass}>New Password</label>
                   <div className="relative">
                     <input
                       type={showNewPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all pr-10"
+                      className={`${inputClass} pr-10`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       {showNewPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -241,31 +245,31 @@ export default function SettingsPage() {
             </div>
 
             {/* Connected Services */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Music className="w-5 h-5 text-green-600" />
+            <div className={cardClass}>
+              <div className={dividerClass}>
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                  <Music className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Connected Services
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Manage your integrations
                   </p>
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-[#1DB954]/10 rounded-xl flex items-center justify-center">
                       <SpotifyIcon className="w-6 h-6 text-[#1DB954]" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900 mb-0.5">
+                      <div className="font-medium text-gray-900 dark:text-gray-100 mb-0.5">
                         Spotify
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         {user?.spotifyConnected
                           ? "Connected and syncing"
                           : "Not connected"}
@@ -274,7 +278,7 @@ export default function SettingsPage() {
                   </div>
                   {user?.spotifyConnected ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                      <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full font-medium">
                         Active
                       </span>
                       <Button variant="outline" className="text-sm px-4">
@@ -291,16 +295,16 @@ export default function SettingsPage() {
             </div>
 
             {/* Notifications */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-purple-600" />
+            <div className={cardClass}>
+              <div className={dividerClass}>
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                  <Bell className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Notifications
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Customize your notification preferences
                   </p>
                 </div>
@@ -337,23 +341,19 @@ export default function SettingsPage() {
                     className="flex items-center justify-between py-3"
                   >
                     <div>
-                      <div className="font-medium text-gray-900 mb-0.5">
+                      <div className="font-medium text-gray-900 dark:text-gray-100 mb-0.5">
                         {item.label}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         {item.description}
                       </div>
                     </div>
                     <button
                       onClick={() => item.onChange(!item.checked)}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${
-                        item.checked ? "bg-indigo-600" : "bg-gray-200"
-                      }`}
+                      className={`relative w-12 h-6 rounded-full transition-colors ${item.checked ? "bg-indigo-600" : "bg-gray-200 dark:bg-gray-700"}`}
                     >
                       <div
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          item.checked ? "translate-x-6" : ""
-                        }`}
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${item.checked ? "translate-x-6" : ""}`}
                       />
                     </button>
                   </div>
@@ -362,16 +362,16 @@ export default function SettingsPage() {
             </div>
 
             {/* Preferences */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Palette className="w-5 h-5 text-blue-600" />
+            <div className={cardClass}>
+              <div className={dividerClass}>
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                  <Palette className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Preferences
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Customize your playback and privacy settings
                   </p>
                 </div>
@@ -402,23 +402,19 @@ export default function SettingsPage() {
                     className="flex items-center justify-between py-3"
                   >
                     <div>
-                      <div className="font-medium text-gray-900 mb-0.5">
+                      <div className="font-medium text-gray-900 dark:text-gray-100 mb-0.5">
                         {item.label}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         {item.description}
                       </div>
                     </div>
                     <button
                       onClick={() => item.onChange(!item.checked)}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${
-                        item.checked ? "bg-indigo-600" : "bg-gray-200"
-                      }`}
+                      className={`relative w-12 h-6 rounded-full transition-colors ${item.checked ? "bg-indigo-600" : "bg-gray-200 dark:bg-gray-700"}`}
                     >
                       <div
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          item.checked ? "translate-x-6" : ""
-                        }`}
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${item.checked ? "translate-x-6" : ""}`}
                       />
                     </button>
                   </div>
@@ -427,97 +423,93 @@ export default function SettingsPage() {
             </div>
 
             {/* Privacy & Security */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-orange-600" />
+            <div className={cardClass}>
+              <div className={dividerClass}>
+                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Privacy & Security
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Control your data and security options
                   </p>
                 </div>
               </div>
               <div className="p-6 space-y-3">
-                <button className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors text-left">
-                  <div>
-                    <div className="font-medium text-gray-900 mb-0.5">
-                      Download Your Data
+                {[
+                  {
+                    title: "Download Your Data",
+                    desc: "Get a copy of your information",
+                  },
+                  {
+                    title: "Two-Factor Authentication",
+                    desc: "Add an extra layer of security",
+                  },
+                  {
+                    title: "Sessions",
+                    desc: "Manage active sessions on other devices",
+                  },
+                ].map((item) => (
+                  <button
+                    key={item.title}
+                    className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100 mb-0.5">
+                        {item.title}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        {item.desc}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      Get a copy of your information
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </button>
-                <button className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors text-left">
-                  <div>
-                    <div className="font-medium text-gray-900 mb-0.5">
-                      Two-Factor Authentication
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Add an extra layer of security
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </button>
-                <button className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors text-left">
-                  <div>
-                    <div className="font-medium text-gray-900 mb-0.5">
-                      Sessions
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Manage active sessions on other devices
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </button>
+                    <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-red-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-200 dark:border-red-900 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-red-100 dark:border-red-900 flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
                   <Trash2 className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Danger Zone
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Irreversible account actions
                   </p>
                 </div>
               </div>
               <div className="p-6 space-y-4">
-                <div className="flex items-start justify-between p-4 bg-red-50 rounded-xl">
+                <div className="flex items-start justify-between p-4 bg-red-50 dark:bg-red-900/10 rounded-xl">
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 mb-1">
+                    <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                       Sign Out
                     </div>
-                    <div className="text-sm text-gray-600 mb-3">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                       Sign out from this device
                     </div>
                     <Button
                       onClick={handleLogout}
                       variant="outline"
-                      className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                      className="border-red-200 dark:border-red-800 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
                     </Button>
                   </div>
                 </div>
-                <div className="flex items-start justify-between p-4 bg-red-50 rounded-xl">
+                <div className="flex items-start justify-between p-4 bg-red-50 dark:bg-red-900/10 rounded-xl">
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 mb-1">
+                    <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                       Delete Account
                     </div>
-                    <div className="text-sm text-gray-600 mb-3">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                       Permanently delete your account and all data. This action
                       cannot be undone.
                     </div>
@@ -525,7 +517,7 @@ export default function SettingsPage() {
                       onClick={handleDeleteAccount}
                       disabled={isDeleting}
                       variant="outline"
-                      className="border-red-300 text-red-600 hover:bg-red-600 hover:text-white"
+                      className="border-red-300 dark:border-red-700 text-red-600 hover:bg-red-600 hover:text-white"
                     >
                       {isDeleting ? (
                         <>

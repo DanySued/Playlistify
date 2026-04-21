@@ -1,20 +1,24 @@
-import { Music, Plus, User, LogIn } from "lucide-react";
+import { Music, Plus, User, LogIn, Sun, Moon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "next-themes";
 
 export function Navigation() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <Music className="w-8 h-8 text-indigo-600" />
-            <span className="font-semibold text-xl">Playlistify</span>
+            <span className="font-semibold text-xl text-gray-900 dark:text-gray-100">
+              Playlistify
+            </span>
           </Link>
 
           {/* Center action */}
@@ -35,18 +39,34 @@ export function Navigation() {
             </Link>
           )}
 
-          {/* Profile / avatar */}
-          <button
-            aria-label="View profile"
-            onClick={() => navigate("/profile")}
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center hover:shadow-lg transition-shadow text-white font-bold text-sm"
-          >
-            {isAuthenticated && user?.initials ? (
-              user.initials
-            ) : (
-              <User className="w-5 h-5 text-white" />
-            )}
-          </button>
+          {/* Right controls */}
+          <div className="flex items-center gap-2">
+            {/* Dark mode toggle */}
+            <button
+              aria-label="Toggle dark mode"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Profile / avatar */}
+            <button
+              aria-label="View profile"
+              onClick={() => navigate("/profile")}
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center hover:shadow-lg transition-shadow text-white font-bold text-sm"
+            >
+              {isAuthenticated && user?.initials ? (
+                user.initials
+              ) : (
+                <User className="w-5 h-5 text-white" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </nav>

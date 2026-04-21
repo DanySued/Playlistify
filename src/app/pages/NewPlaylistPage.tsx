@@ -62,7 +62,7 @@ export default function NewPlaylistPage() {
 
   const toggleGenre = (genre: string) =>
     setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre],
     );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,17 +85,17 @@ export default function NewPlaylistPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
         <Navigation />
         <main className="pt-24 pb-16 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Music className="w-10 h-10 text-indigo-600" />
+            <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Sign in to create playlists
             </h2>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Create an account to start building your music library.
             </p>
             <div className="flex items-center justify-center gap-4">
@@ -127,8 +127,15 @@ export default function NewPlaylistPage() {
             ? "h-28"
             : "h-48";
 
+  const inputClass =
+    "w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all";
+  const cardClass =
+    "bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6";
+  const labelClass =
+    "block text-sm font-medium text-gray-700 dark:text-gray-300";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
       <Navigation />
 
       <main className="pt-24 pb-16">
@@ -137,15 +144,15 @@ export default function NewPlaylistPage() {
           <div className="mb-8 flex items-center gap-4">
             <Link
               to="/"
-              className="w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
+              className="w-10 h-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
+              <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </Link>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 New Playlist
               </h1>
-              <p className="text-gray-500 text-sm mt-0.5">
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
                 Create and customize your playlist
               </p>
             </div>
@@ -156,8 +163,8 @@ export default function NewPlaylistPage() {
               {/* ── Left: preview column ── */}
               <div className="space-y-6">
                 {/* Cover art upload */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4">
+                <div className={cardClass}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Cover Art
                   </h2>
                   <label className="block cursor-pointer group">
@@ -167,7 +174,7 @@ export default function NewPlaylistPage() {
                       onChange={handleImageChange}
                       className="hidden"
                     />
-                    <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center relative border-2 border-dashed border-gray-200 group-hover:border-indigo-400 transition-colors">
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 flex items-center justify-center relative border-2 border-dashed border-gray-200 dark:border-gray-600 group-hover:border-indigo-400 transition-colors">
                       {imagePreview ? (
                         <>
                           <img
@@ -181,13 +188,13 @@ export default function NewPlaylistPage() {
                         </>
                       ) : (
                         <div className="text-center p-8">
-                          <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <Upload className="w-8 h-8 text-indigo-400" />
                           </div>
-                          <p className="text-sm font-medium text-gray-700 mb-1">
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Upload cover art
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             PNG, JPG up to 10 MB
                           </p>
                         </div>
@@ -197,8 +204,8 @@ export default function NewPlaylistPage() {
                 </div>
 
                 {/* Bento preview */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4">
+                <div className={cardClass}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Bento Preview
                   </h2>
                   <div
@@ -223,7 +230,7 @@ export default function NewPlaylistPage() {
                       )}
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-xs text-gray-400">
+                  <div className="mt-3 flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
                     <span>
                       Size: {SIZES.find((s) => s.value === size)?.label}
                     </span>
@@ -235,15 +242,14 @@ export default function NewPlaylistPage() {
               {/* ── Right: form column ── */}
               <div className="space-y-6">
                 {/* Basic details */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                  <h2 className="font-semibold text-gray-900">
+                <div className={`${cardClass} space-y-4`}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100">
                     Playlist Details
                   </h2>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Playlist name{" "}
-                      <span className="text-red-400">*</span>
+                    <label className={`${labelClass} mb-1.5`}>
+                      Playlist name <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -252,15 +258,15 @@ export default function NewPlaylistPage() {
                       placeholder="Give your playlist a name…"
                       maxLength={100}
                       required
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                      className={inputClass}
                     />
-                    <div className="text-right text-xs text-gray-400 mt-1">
+                    <div className="text-right text-xs text-gray-400 dark:text-gray-500 mt-1">
                       {name.length}/100
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className={`${labelClass} mb-1.5`}>
                       Description
                     </label>
                     <textarea
@@ -269,15 +275,15 @@ export default function NewPlaylistPage() {
                       placeholder="What's this playlist about?"
                       rows={3}
                       maxLength={300}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                      className={`${inputClass} resize-none`}
                     />
-                    <div className="text-right text-xs text-gray-400 mt-1">
+                    <div className="text-right text-xs text-gray-400 dark:text-gray-500 mt-1">
                       {description.length}/300
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className={`${labelClass} mb-1.5`}>
                       Spotify playlist URL{" "}
                       <span className="text-gray-400 font-normal">
                         (optional)
@@ -288,14 +294,14 @@ export default function NewPlaylistPage() {
                       value={spotifyUrl}
                       onChange={(e) => setSpotifyUrl(e.target.value)}
                       placeholder="https://open.spotify.com/playlist/…"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                      className={inputClass}
                     />
                   </div>
                 </div>
 
                 {/* Visibility */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4">
+                <div className={cardClass}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Visibility
                   </h2>
                   <div className="flex gap-3">
@@ -304,20 +310,20 @@ export default function NewPlaylistPage() {
                       onClick={() => setIsPublic(true)}
                       className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
                         isPublic
-                          ? "border-indigo-600 bg-indigo-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                     >
                       <Globe
-                        className={`w-5 h-5 ${isPublic ? "text-indigo-600" : "text-gray-400"}`}
+                        className={`w-5 h-5 ${isPublic ? "text-indigo-600" : "text-gray-400 dark:text-gray-500"}`}
                       />
                       <div className="text-left">
                         <div
-                          className={`text-sm font-medium ${isPublic ? "text-indigo-600" : "text-gray-700"}`}
+                          className={`text-sm font-medium ${isPublic ? "text-indigo-600" : "text-gray-700 dark:text-gray-300"}`}
                         >
                           Public
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400 dark:text-gray-500">
                           Anyone can see
                         </div>
                       </div>
@@ -327,20 +333,20 @@ export default function NewPlaylistPage() {
                       onClick={() => setIsPublic(false)}
                       className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
                         !isPublic
-                          ? "border-indigo-600 bg-indigo-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                     >
                       <Lock
-                        className={`w-5 h-5 ${!isPublic ? "text-indigo-600" : "text-gray-400"}`}
+                        className={`w-5 h-5 ${!isPublic ? "text-indigo-600" : "text-gray-400 dark:text-gray-500"}`}
                       />
                       <div className="text-left">
                         <div
-                          className={`text-sm font-medium ${!isPublic ? "text-indigo-600" : "text-gray-700"}`}
+                          className={`text-sm font-medium ${!isPublic ? "text-indigo-600" : "text-gray-700 dark:text-gray-300"}`}
                         >
                           Private
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400 dark:text-gray-500">
                           Only you can see
                         </div>
                       </div>
@@ -349,8 +355,8 @@ export default function NewPlaylistPage() {
                 </div>
 
                 {/* Grid size */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4">
+                <div className={cardClass}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Grid Size
                   </h2>
                   <div className="grid grid-cols-3 gap-2">
@@ -361,8 +367,8 @@ export default function NewPlaylistPage() {
                         onClick={() => setSize(value)}
                         className={`py-2.5 px-3 rounded-xl text-sm font-medium border-2 transition-all ${
                           size === value
-                            ? "border-indigo-600 bg-indigo-50 text-indigo-600"
-                            : "border-gray-200 text-gray-600 hover:border-gray-300"
+                            ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500"
                         }`}
                       >
                         {label}
@@ -372,8 +378,10 @@ export default function NewPlaylistPage() {
                 </div>
 
                 {/* Genres */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4">Genres</h2>
+                <div className={cardClass}>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                    Genres
+                  </h2>
                   <div className="flex flex-wrap gap-2">
                     {GENRES.map((genre) => (
                       <button
@@ -383,7 +391,7 @@ export default function NewPlaylistPage() {
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                           selectedGenres.includes(genre)
                             ? "bg-indigo-600 border-indigo-600 text-white"
-                            : "border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-indigo-300 hover:text-indigo-600"
                         }`}
                       >
                         {selectedGenres.includes(genre) && (
@@ -396,41 +404,41 @@ export default function NewPlaylistPage() {
                 </div>
 
                 {/* Folder Selection */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className={cardClass}>
                   <div className="flex items-center gap-2 mb-4">
-                    <FolderOpen className="w-5 h-5 text-gray-700" />
-                    <h2 className="font-semibold text-gray-900">Organize in Folder</h2>
+                    <FolderOpen className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                    <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                      Organize in Folder
+                    </h2>
                   </div>
-                  <p className="text-sm text-gray-500 mb-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                     Choose a folder to organize this playlist
                   </p>
                   <div className="space-y-2">
-                    {/* No folder option */}
                     <button
                       type="button"
                       onClick={() => setSelectedFolderId(null)}
                       className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
                         selectedFolderId === null
-                          ? "border-gray-400 bg-gray-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-gray-400 dark:border-gray-500 bg-gray-50 dark:bg-gray-800"
+                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <FolderOpen className="w-4 h-4 text-gray-500" />
+                        <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                          <FolderOpen className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                         </div>
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           No folder
                         </span>
                       </div>
                       {selectedFolderId === null && (
-                        <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
+                        <div className="w-5 h-5 bg-gray-600 dark:bg-gray-400 rounded-full flex items-center justify-center">
                           <div className="w-2 h-2 bg-white rounded-full" />
                         </div>
                       )}
                     </button>
 
-                    {/* Folder options */}
                     {defaultFolders.map((folder) => (
                       <button
                         key={folder.id}
@@ -439,7 +447,7 @@ export default function NewPlaylistPage() {
                         className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
                           selectedFolderId === folder.id
                             ? "bg-opacity-10"
-                            : "border-gray-200 hover:border-gray-300"
+                            : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                         }`}
                         style={{
                           borderColor:
@@ -460,10 +468,10 @@ export default function NewPlaylistPage() {
                             {folder.icon}
                           </div>
                           <div className="text-left">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                               {folder.name}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                               {folder.description}
                             </div>
                           </div>
@@ -479,13 +487,12 @@ export default function NewPlaylistPage() {
                       </button>
                     ))}
 
-                    {/* Create New Folder Option */}
                     <Link to="/new-folder">
                       <button
                         type="button"
-                        className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-indigo-400 hover:bg-indigo-50 transition-all text-gray-600 hover:text-indigo-600"
+                        className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all text-gray-600 dark:text-gray-300 hover:text-indigo-600"
                       >
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
                           <Plus className="w-4 h-4 text-indigo-600" />
                         </div>
                         <span className="text-sm font-medium">

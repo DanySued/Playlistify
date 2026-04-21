@@ -23,7 +23,7 @@ export default function CallbackPage() {
       setError(
         errorParam === "access_denied"
           ? "You declined the Spotify permission request."
-          : `Spotify returned an error: ${errorParam}`
+          : `Spotify returned an error: ${errorParam}`,
       );
       return;
     }
@@ -43,13 +43,15 @@ export default function CallbackPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-md w-full text-center space-y-4">
-          <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 max-w-md w-full text-center space-y-4">
+          <div className="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto">
             <AlertCircle className="w-7 h-7 text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Sign-in failed</h1>
-          <p className="text-gray-500 text-sm">{error}</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            Sign-in failed
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">{error}</p>
           <button
             onClick={() => navigate("/login", { replace: true })}
             className="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
@@ -62,15 +64,19 @@ export default function CallbackPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950">
       <div className="flex flex-col items-center gap-5">
-        <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center">
+        <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center">
           <Music className="w-8 h-8 text-indigo-600" />
         </div>
         <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
         <div className="text-center">
-          <p className="font-semibold text-gray-800">Connecting your Spotify…</p>
-          <p className="text-sm text-gray-400 mt-1">Fetching your playlists</p>
+          <p className="font-semibold text-gray-800 dark:text-gray-200">
+            Connecting your Spotify…
+          </p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+            Fetching your playlists
+          </p>
         </div>
       </div>
     </div>

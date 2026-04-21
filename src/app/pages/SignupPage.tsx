@@ -93,7 +93,10 @@ export default function SignupPage() {
 
           <ul className="space-y-3">
             {BENEFITS.map((benefit) => (
-              <li key={benefit} className="flex items-center gap-3 text-white/80">
+              <li
+                key={benefit}
+                className="flex items-center gap-3 text-white/80"
+              >
                 <div className="w-6 h-6 rounded-full bg-[#1DB954]/20 flex items-center justify-center flex-shrink-0">
                   <Check className="w-3.5 h-3.5 text-[#1DB954]" />
                 </div>
@@ -104,16 +107,18 @@ export default function SignupPage() {
         </div>
 
         <div className="relative z-10">
-          <p className="text-white/40 text-xs">© 2026 Playlistify. Free to use.</p>
+          <p className="text-white/40 text-xs">
+            © 2026 Playlistify. Free to use.
+          </p>
         </div>
       </div>
 
       {/* ── Right form panel ── */}
-      <div className="flex-1 flex flex-col justify-center items-center px-6 py-12 bg-white overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center items-center px-6 py-12 bg-white dark:bg-gray-950 overflow-y-auto">
         <div className="w-full max-w-md">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to home
@@ -121,18 +126,20 @@ export default function SignupPage() {
 
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <Music className="w-7 h-7 text-indigo-600" />
-            <span className="font-bold text-lg">Playlistify</span>
+            <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
+              Playlistify
+            </span>
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">
             Create your account
           </h1>
-          <p className="text-gray-500 mb-8">
+          <p className="text-gray-500 dark:text-gray-400 mb-8">
             Join thousands of music lovers on Playlistify
           </p>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-6">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm rounded-lg px-4 py-3 mb-6">
               {error}
             </div>
           )}
@@ -159,10 +166,10 @@ export default function SignupPage() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-gray-200 dark:border-gray-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-4 text-gray-400">
+              <span className="bg-white dark:bg-gray-950 px-4 text-gray-400 dark:text-gray-500">
                 or sign up with email
               </span>
             </div>
@@ -171,7 +178,7 @@ export default function SignupPage() {
           {/* Email form */}
           <form onSubmit={handleFormSignup} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Full name
               </label>
               <input
@@ -180,12 +187,12 @@ export default function SignupPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Rivera"
                 disabled={isDisabled}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Email address
               </label>
               <input
@@ -194,12 +201,12 @@ export default function SignupPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 disabled={isDisabled}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -209,12 +216,12 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
                   disabled={isDisabled}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 pr-12 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -234,7 +241,10 @@ export default function SignupPage() {
                 disabled={isDisabled}
                 className="mt-0.5 w-4 h-4 accent-indigo-600 rounded"
               />
-              <label htmlFor="terms" className="text-sm text-gray-600">
+              <label
+                htmlFor="terms"
+                className="text-sm text-gray-600 dark:text-gray-300"
+              >
                 I agree to the{" "}
                 <a href="#" className="text-indigo-600 hover:underline">
                   Terms of Service
@@ -262,7 +272,7 @@ export default function SignupPage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-6">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
             Already have an account?{" "}
             <Link
               to="/login"
