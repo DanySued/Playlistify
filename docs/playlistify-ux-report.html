@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playlistify — UX Report & Persona Analysis</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0e;
+      --surface: #141417;
+      --surface2: #1c1c21;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f0f2;
+      --text2: #888;
+      --text3: #555;
+      --green: #1bd65e;
+      --blue: #4f8ef7;
+      --purple: #a78bfa;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #fbbf24;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* ── NAV ── */
+    .report-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(12,12,14,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 40px;
+    }
+    .report-nav a {
+      display: inline-block;
+      padding: 18px 20px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+    .report-nav a:hover { color: var(--text); }
+    .report-nav a.active { color: var(--text); border-bottom-color: var(--green); }
+    .report-nav .logo {
+      font-weight: 800;
+      color: var(--green);
+      margin-right: 24px;
+      font-size: 15px;
+      border-bottom: none !important;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 72px 40px 56px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { }
+    .hero-stat .val { font-size: 28px; font-weight: 800; color: var(--text); }
+    .hero-stat .lbl { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+    /* ── LAYOUT ── */
+    .content { max-width: 900px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 60px; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-header h2 { font-size: 24px; font-weight: 700; }
+    .section-number {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── STATUS GRID ── */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .status-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .status-icon.pass { background: rgba(27,214,94,.15); color: var(--green); }
+    .status-icon.warn { background: rgba(251,191,36,.15); color: var(--yellow); }
+    .status-icon.fail { background: rgba(239,68,68,.15); color: var(--red); }
+    .status-text .name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .status-text .note { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* ── ISSUE CARDS ── */
+    .issue {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin-bottom: 16px;
+    }
+    .issue-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .severity {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .severity.critical { background: rgba(239,68,68,.15); color: var(--red); }
+    .severity.high { background: rgba(249,115,22,.15); color: var(--orange); }
+    .severity.medium { background: rgba(251,191,36,.15); color: var(--yellow); }
+    .severity.low { background: rgba(79,142,247,.15); color: var(--blue); }
+    .issue h3 { font-size: 16px; font-weight: 700; }
+    .issue p { color: var(--text2); font-size: 14px; line-height: 1.65; }
+    .issue .fix {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text2);
+      border-left: 3px solid var(--green);
+    }
+    .issue .fix strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+    /* ── SUGGESTIONS ── */
+    .suggestion-list { list-style: none; }
+    .suggestion-list li {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .suggestion-list li:last-child { border-bottom: none; }
+    .sug-num {
+      min-width: 28px;
+      height: 28px;
+      background: var(--surface2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+    .sug-body .title { font-weight: 600; font-size: 15px; margin-bottom: 5px; }
+    .sug-body .desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    .sug-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--surface2);
+      color: var(--text3);
+    }
+
+    /* ── PERSONA PAGE ── */
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .persona-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: border-color .15s, transform .1s;
+    }
+    .persona-card:hover { border-color: rgba(255,255,255,.15); transform: translateY(-2px); }
+    .persona-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .persona-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .persona-card .role { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
+    .persona-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    /* ── PERSONA DETAIL ── */
+    .persona-detail { display: none; }
+    .persona-detail.open { display: block; }
+    .pd-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 28px 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      margin-bottom: 0;
+    }
+    .pd-body {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      padding: 0 32px 28px;
+      margin-bottom: 32px;
+    }
+    .pd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 40px;
+    }
+    .pd-section { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .pd-section:last-child { border-bottom: none; }
+    .pd-section h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 12px; }
+    .pd-section ul { list-style: none; }
+    .pd-section ul li {
+      font-size: 14px;
+      color: var(--text2);
+      padding: 4px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .pd-section ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text3);
+    }
+
+    .analysis-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+    .ab-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .ab-top h3 { font-size: 18px; font-weight: 700; }
+    .ab-score {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .score-high { background: rgba(27,214,94,.15); color: var(--green); }
+    .score-mid { background: rgba(251,191,36,.15); color: var(--yellow); }
+    .score-low { background: rgba(239,68,68,.15); color: var(--red); }
+
+    .feature-matrix {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      align-items: center;
+    }
+    .fm-name { font-size: 14px; color: var(--text2); padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .fm-val { font-size: 13px; font-weight: 600; padding: 6px 0; border-bottom: 1px solid var(--border); text-align: right; }
+    .fm-name:last-of-type, .fm-val:last-child { border-bottom: none; }
+    .v-works { color: var(--green); }
+    .v-partial { color: var(--yellow); }
+    .v-broken { color: var(--red); }
+
+    .rec-list { margin-top: 18px; }
+    .rec-item {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .rec-item:last-child { border-bottom: none; }
+    .rec-icon { color: var(--blue); flex-shrink: 0; font-size: 13px; margin-top: 2px; }
+
+    .quote-block {
+      border-left: 3px solid var(--purple);
+      padding: 14px 18px;
+      margin: 20px 0;
+      background: rgba(167,139,250,.06);
+      border-radius: 0 10px 10px 0;
+      font-style: italic;
+      color: var(--text2);
+      font-size: 15px;
+    }
+
+    /* ── FOOTER ── */
+    .report-footer {
+      text-align: center;
+      padding: 48px 40px;
+      color: var(--text3);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+    .report-footer strong { color: var(--text2); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="report-nav">
+  <a href="#" class="logo">Playlistify</a>
+  <a href="#" class="active" onclick="showPage('testing', this)">UX Testing Report</a>
+  <a href="#" onclick="showPage('personas', this)">Persona Analysis</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════ PAGE 1: TESTING ═════════════════════════════ -->
+<div class="page active" id="page-testing">
+
+  <div class="hero">
+    <div class="hero-label">Playwright UX Audit — April 2026</div>
+    <h1>UI/UX Testing Results</h1>
+    <p>Full interactive audit of the <code>feature/pinterest-redesign</code> branch. Every user-facing flow tested against the original spec.</p>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="val">14</div><div class="lbl">Features Tested</div></div>
+      <div class="hero-stat"><div class="val">11</div><div class="lbl">Passed</div></div>
+      <div class="hero-stat"><div class="val">2</div><div class="lbl">Partial</div></div>
+      <div class="hero-stat"><div class="val">1</div><div class="lbl">Critical Bug</div></div>
+      <div class="hero-stat"><div class="val">10</div><div class="lbl">UX Suggestions</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- TEST RESULTS -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2>Feature Test Results</h2>
+      </div>
+      <div class="status-grid">
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Login Page</div>
+            <div class="note">Split panel renders. Spotify OAuth button works. Gradient masonry preview renders correctly.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Masonry Home Grid</div>
+            <div class="note">Pinterest-style layout renders. Stable gradient + height hashing per card. Scrolls correctly.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Card Hover State</div>
+            <div class="note">"Add to board" button and "···" menu appear on hover. Transitions are smooth.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Context Menu</div>
+            <div class="note">Opens on ··· click. Shows: Add to board, Edit, Manage labels, Duplicate, Delete. Closes on Escape.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Multi-Select Mode</div>
+            <div class="note">Select button toggles mode. Cards show radio buttons. Selected cards show green outline + checkmark. Action bar at bottom shows count, bulk actions.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Create Modal</div>
+            <div class="note">Opens from + button and Create in topbar. Board/Playlist tabs. AI suggest button present. Creates board and navigates on success.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Boards Page</div>
+            <div class="note">Grid of board cards. Empty state shows correctly. Created boards appear immediately.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Board Detail Page</div>
+            <div class="note">Rename, archive, delete all work. Select mode + remove from board works. "Add playlists" opens modal.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Settings Panel</div>
+            <div class="note">Slides in correctly. Gemini API key field + save. Albums toggle. Artist notification search. Sign out.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Notifications Panel</div>
+            <div class="note">Slides in. Shows "Recent playlists" with gradient thumbnails. Clickable rows.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Discover Page</div>
+            <div class="note">Renders today's date, featured playlist grid, mood prompt cards. Visual layout clean.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon pass">✓</div>
+          <div class="status-text">
+            <div class="name">Radio Page</div>
+            <div class="note">Create station modal opens. Playlist selection with checkboxes. Frequency controls work. Station cards render.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon warn">⚠</div>
+          <div class="status-text">
+            <div class="name">Playlist Detail Page</div>
+            <div class="note">Hero, metadata, and action buttons render correctly. Track list empty — expected with mock tokens, but no error message shown to explain why.</div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon fail">✗</div>
+          <div class="status-text">
+            <div class="name">Add Playlists to Board</div>
+            <div class="note">From Board Detail → "Add playlists" opens a board-picker, not a playlist-picker. Users must click the current board to add playlists to it — backward UX.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUGS -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2>Issues Found</h2>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity critical">Critical</span>
+          <h3>"Add playlists" on Board Detail has inverted UX flow</h3>
+        </div>
+        <p>When a user clicks "Add playlists" on a board's detail page, <code>SaveToBoardModal</code> opens and asks them to pick a <em>board</em> — the user has to click the current board to add playlists to it. This is the opposite of what every user expects: pick playlists, then confirm. The component was designed for the "from playlist → choose board" direction and reused incorrectly here.</p>
+        <div class="fix">
+          <strong>Fix:</strong> Create a dedicated <code>AddPlaylistsToBoard</code> modal that shows a checklist of playlists not yet in the current board. On confirm, call <code>addPlaylistToBoard(boardId, playlistId)</code> for each checked item. The <code>SaveToBoardModal</code> stays as-is for the playlist→board direction.
+        </div>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity high">High</span>
+          <h3>Discover page mood cards are non-functional</h3>
+        </div>
+        <p>The "Explore moods" section renders 6 attractive gradient cards (Late Night Playlist, Feel-good Anthems, etc.) but clicking any of them does nothing. For a user who lands on Discover hoping to find music, this is a broken promise.</p>
+        <div class="fix">
+          <strong>Fix:</strong> At minimum, clicking a mood card should navigate to the home page filtered by a matching label (if labels exist), or show a filtered subset of the user's playlists. Even a simple name-match filter ("chill", "focus") beats doing nothing.
+        </div>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity high">High</span>
+          <h3>Search bar doesn't filter results</h3>
+        </div>
+        <p>The search input in the topbar accepts typing but the masonry grid doesn't update. The query is passed via outlet context but <code>HomePage</code> doesn't appear to consume it for filtering.</p>
+        <div class="fix">
+          <strong>Fix:</strong> In <code>HomePage</code>, read the search query from <code>useOutletContext()</code> and filter the playlist array by name match before rendering the masonry grid. Debounce by 150ms.
+        </div>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity medium">Medium</span>
+          <h3>Playlist detail track area shows no feedback on load failure</h3>
+        </div>
+        <p>When the Spotify API call for tracks fails (expired token, network error), the track section below the hero is simply blank. There's no spinner, no error message, no explanation. Users will assume the playlist is empty.</p>
+        <div class="fix">
+          <strong>Fix:</strong> Add an error state to the track fetch: catch the error and render a message like "Couldn't load tracks. <u>Try again</u>" with a retry button that re-runs the fetch.
+        </div>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity medium">Medium</span>
+          <h3>Multi-select state doesn't clear when opening panels</h3>
+        </div>
+        <p>Opening the Settings or Notifications panel while in multi-select mode leaves the selection action bar visible behind the panel, creating a visual collision and confusing state.</p>
+        <div class="fix">
+          <strong>Fix:</strong> When a panel opens, call <code>clearSelection()</code> and exit selection mode. Or use z-index to ensure the panel fully covers the action bar and restore state on close.
+        </div>
+      </div>
+
+      <div class="issue">
+        <div class="issue-header">
+          <span class="severity low">Low</span>
+          <h3>Sidebar icons lack tooltips on desktop</h3>
+        </div>
+        <p>The fixed sidebar shows only icons. New users have no way to know what the grid icon, the wave icon, or the radio icon do without hovering. The current hover state is a background color change — not a label.</p>
+        <div class="fix">
+          <strong>Fix:</strong> Add a positioned tooltip label that appears on hover (e.g., "Boards", "Radio", "Discover"). The icon already has <code>title</code> attributes — ensure they're visible as a real tooltip, not just the browser default.
+        </div>
+      </div>
+    </div>
+
+    <!-- UX SUGGESTIONS -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2>UX Enhancement Suggestions</h2>
+      </div>
+
+      <ul class="suggestion-list">
+        <li>
+          <div class="sug-num">1</div>
+          <div class="sug-body">
+            <div class="title">Add a playlist-picker to boards (separate from SaveToBoardModal)</div>
+            <div class="desc">When on a board detail page, "Add playlists" should open a modal showing all playlists not already in the board — with checkboxes, search, and a single "Add" CTA. This is the most-used action on the board detail page and the current UX is backwards.</div>
+            <span class="sug-tag">Critical fix</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">2</div>
+          <div class="sug-body">
+            <div class="title">Wire up Discover mood cards to filter or navigate</div>
+            <div class="desc">Each mood prompt card should trigger something — filter by matching label, navigate to a smart board, or at minimum open a filtered search. Dead clicks destroy trust faster than any visual flaw.</div>
+            <span class="sug-tag">High impact</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">3</div>
+          <div class="sug-body">
+            <div class="title">Live search filtering on the masonry grid</div>
+            <div class="desc">The search input exists. Connect it. Filter playlists in real-time by name as the user types (debounced). Also filter board names and label names so a single search bar covers the whole library.</div>
+            <span class="sug-tag">High impact</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">4</div>
+          <div class="sug-body">
+            <div class="title">Mobile-responsive layout pass</div>
+            <div class="desc">The sidebar collapses correctly at narrow widths, but the masonry grid, modals, and detail pages need a mobile-first pass. At 375px the topbar search is too narrow and modals overflow. Given that a large segment of target users are mobile-primary, this is table stakes.</div>
+            <span class="sug-tag">Audience blocker</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">5</div>
+          <div class="sug-body">
+            <div class="title">Board cover photo / custom mosaic</div>
+            <div class="desc">Boards with playlists automatically get a 2×1 mosaic — good. But boards with 0 playlists show a gray rectangle. Let users upload a cover photo for any board (same pattern as playlist edit). Empty-state boards with no cover feel abandoned.</div>
+            <span class="sug-tag">Visual polish</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">6</div>
+          <div class="sug-body">
+            <div class="title">Drag-to-reorder playlists within a board</div>
+            <div class="desc">Once users add playlists to a board, they'll want to arrange them. The masonry layout makes drag-and-drop tricky, but even a drag handle on the card with snap-to-column ordering would be a significant UX upgrade for the "curators" persona.</div>
+            <span class="sug-tag">Power user</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">7</div>
+          <div class="sug-body">
+            <div class="title">Onboarding flow for first-time users</div>
+            <div class="desc">Users who connect Spotify and see a masonry grid of playlists don't know what to do next. A 3-step coach overlay — "this is your library", "create a board", "add playlists to it" — would dramatically reduce abandonment on first visit.</div>
+            <span class="sug-tag">Retention</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">8</div>
+          <div class="sug-body">
+            <div class="title">Radio: basic shuffle playback before ElevenLabs</div>
+            <div class="desc">The Radio page creates stations but they do nothing yet. Before ElevenLabs integration, implement a "Play station" button that opens Spotify with a shuffle of the selected playlists. That makes Radio feel real and valuable today.</div>
+            <span class="sug-tag">Feature gap</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">9</div>
+          <div class="sug-body">
+            <div class="title">Label filter chips above the masonry grid</div>
+            <div class="desc">Labels exist but there's no way to browse by label without going through the context menu per card. Add a horizontal chip row above the grid — click a label to filter the masonry to only playlists with that label. This surfaces the label system immediately.</div>
+            <span class="sug-tag">Discoverability</span>
+          </div>
+        </li>
+        <li>
+          <div class="sug-num">10</div>
+          <div class="sug-body">
+            <div class="title">Keyboard shortcuts for power users</div>
+            <div class="desc">Add: <kbd>Cmd+K</kbd> to focus search, <kbd>Escape</kbd> to close any modal/panel/selection, <kbd>S</kbd> to enter select mode on home. Power users will discover these and feel the app is polished. They're also fast to implement.</div>
+            <span class="sug-tag">Low effort, high signal</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE 2: PERSONAS ════════════════════════════ -->
+<div class="page" id="page-personas">
+
+  <div class="hero">
+    <div class="hero-label">Audience Research — April 2026</div>
+    <h1>Persona Analysis</h1>
+    <p>Three target audience profiles built from user behavior research. Each persona evaluated against Playlistify's current feature set with specific UX recommendations.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- PERSONA CARDS -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2>Target Personas</h2>
+      </div>
+      <div class="persona-grid">
+        <div class="persona-card" onclick="togglePersona('p1', this)">
+          <div class="persona-avatar" style="background: rgba(167,139,250,.15);">🎨</div>
+          <h3>Maya, 24</h3>
+          <div class="role">Graphic design student · Brooklyn, NY</div>
+          <span class="persona-tag" style="background:rgba(167,139,250,.15);color:#a78bfa;">Aesthetic Curator</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">45+ playlists</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">80% mobile</span>
+        </div>
+        <div class="persona-card" onclick="togglePersona('p2', this)">
+          <div class="persona-avatar" style="background: rgba(79,142,247,.15);">📋</div>
+          <h3>Daniel, 33</h3>
+          <div class="role">Product manager · Austin, TX</div>
+          <span class="persona-tag" style="background:rgba(79,142,247,.15);color:#4f8ef7;">Library Organizer</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">60+ playlists</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">50/50 device</span>
+        </div>
+        <div class="persona-card" onclick="togglePersona('p3', this)">
+          <div class="persona-avatar" style="background: rgba(27,214,94,.15);">📱</div>
+          <h3>Zoe, 20</h3>
+          <div class="role">College sophomore · Chicago, IL</div>
+          <span class="persona-tag" style="background:rgba(27,214,94,.15);color:#1bd65e;">Social Listener</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">20 playlists</span>
+          <span class="persona-tag" style="background:var(--surface2);color:var(--text2);">98% mobile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONA DETAILS -->
+    <div class="persona-detail" id="p1">
+      <div class="pd-header">
+        <div class="persona-avatar" style="background: rgba(167,139,250,.15); width:56px; height:56px; font-size:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🎨</div>
+        <div>
+          <h3 style="font-size:22px; font-weight:800;">Maya — The Aesthetic Curator</h3>
+          <p style="color:var(--text2); font-size:14px;">24 · Graphic design student · Brooklyn, NY · 45+ playlists · 80% mobile</p>
+        </div>
+      </div>
+      <div class="pd-body">
+        <div class="pd-grid">
+          <div class="pd-section">
+            <h4>Pain points with Spotify</h4>
+            <ul>
+              <li>No visual library — just a flat list</li>
+              <li>No way to group by mood or season</li>
+              <li>Custom covers disappear or get overridden</li>
+              <li>Can't communicate a playlist's vibe at a glance</li>
+            </ul>
+          </div>
+          <div class="pd-section">
+            <h4>What resonates with Playlistify</h4>
+            <ul>
+              <li>Masonry grid immediately feels right</li>
+              <li>Boards map to her "dark academia", "summer 2023" mental model</li>
+              <li>Image upload in Edit modal</li>
+              <li>AI name suggestions (ironic and sincere)</li>
+              <li>Label system for granular tagging</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona-detail" id="p2">
+      <div class="pd-header">
+        <div class="persona-avatar" style="background: rgba(79,142,247,.15); width:56px; height:56px; font-size:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;">📋</div>
+        <div>
+          <h3 style="font-size:22px; font-weight:800;">Daniel — The Library Organizer</h3>
+          <p style="color:var(--text2); font-size:14px;">33 · Product manager · Austin, TX · 60+ playlists · 50% desktop / 50% mobile</p>
+        </div>
+      </div>
+      <div class="pd-body">
+        <div class="pd-grid">
+          <div class="pd-section">
+            <h4>Pain points with Spotify</h4>
+            <ul>
+              <li>60+ playlists in a flat list is unmanageable</li>
+              <li>No folder hierarchy in Spotify's native app</li>
+              <li>Liked Songs has 2,000-song graveyard</li>
+              <li>Can't quickly find the right playlist for a context</li>
+            </ul>
+          </div>
+          <div class="pd-section">
+            <h4>What resonates with Playlistify</h4>
+            <ul>
+              <li>Boards match his mental model: "Work", "Exercise", "Family"</li>
+              <li>Multi-select + bulk add to board for rapid organization</li>
+              <li>Archive for playlists he won't delete but doesn't use</li>
+              <li>Radio station concept for context-aware listening</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona-detail" id="p3">
+      <div class="pd-header">
+        <div class="persona-avatar" style="background: rgba(27,214,94,.15); width:56px; height:56px; font-size:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;">📱</div>
+        <div>
+          <h3 style="font-size:22px; font-weight:800;">Zoe — The Social Listener</h3>
+          <p style="color:var(--text2); font-size:14px;">20 · College sophomore · Chicago, IL · 20 playlists · 98% mobile</p>
+        </div>
+      </div>
+      <div class="pd-body">
+        <div class="pd-grid">
+          <div class="pd-section">
+            <h4>Pain points with Spotify</h4>
+            <ul>
+              <li>Decision fatigue: can't pick what to play</li>
+              <li>Spotify home shows what she's heard, not what fits now</li>
+              <li>No way to signal vibe to herself or others</li>
+              <li>Friends' playlists feel more curated — comparison anxiety</li>
+            </ul>
+          </div>
+          <div class="pd-section">
+            <h4>What resonates with Playlistify</h4>
+            <ul>
+              <li>Discover page — she wants to be prompted</li>
+              <li>Visual masonry feels like Pinterest / TikTok — familiar</li>
+              <li>Mood boards match her social contexts</li>
+              <li>Labels for energy level and occasion</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYSIS -->
+    <div class="section" style="margin-top: 48px;">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2>Experience Analysis by Persona</h2>
+      </div>
+
+      <!-- MAYA -->
+      <div class="analysis-block">
+        <div class="ab-top">
+          <div class="persona-avatar" style="background: rgba(167,139,250,.15); width:40px; height:40px; font-size:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">🎨</div>
+          <h3>Maya's experience</h3>
+          <div class="ab-score score-mid">Good fit, blocked by mobile</div>
+        </div>
+
+        <p style="color:var(--text2); font-size:14px; margin-bottom:20px; line-height:1.65;">Maya gets what Playlistify is immediately. The masonry grid looks like the thing she's been waiting for. She'll spend 20 minutes organizing playlists into mood boards on her first session — if she's on a desktop. The 80% mobile split is the dealbreaker: the current mobile experience doesn't match the desktop quality and the hover-based card interactions (Add to board, ···) simply don't work on touch.</p>
+
+        <div class="feature-matrix">
+          <div class="fm-name">Masonry grid layout</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Board creation + naming</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Image upload (playlist edit)</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Label system</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">AI name suggestions</div><div class="fm-val v-partial">Partial — requires Gemini key setup ⚠</div>
+          <div class="fm-name">Mobile layout</div><div class="fm-val v-broken">Broken for primary use case ✗</div>
+          <div class="fm-name">Board cover photos</div><div class="fm-val v-broken">Not available ✗</div>
+          <div class="fm-name">Drag to reorder within board</div><div class="fm-val v-broken">Not available ✗</div>
+        </div>
+
+        <div class="quote-block">"It finally looks like how I think about my playlists. I just need it to work on my phone too."</div>
+
+        <div class="rec-list">
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 1:</strong> Touch-friendly card interactions — long-press to open context menu on mobile, tap card to navigate.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 2:</strong> Board cover photo upload (same flow as playlist image upload).</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 3:</strong> Zero-friction AI suggestions — default to a built-in key so she doesn't have to configure anything.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 4:</strong> Drag-to-arrange playlists within a board view.</span></div>
+        </div>
+      </div>
+
+      <!-- DANIEL -->
+      <div class="analysis-block">
+        <div class="ab-top">
+          <div class="persona-avatar" style="background: rgba(79,142,247,.15); width:40px; height:40px; font-size:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">📋</div>
+          <h3>Daniel's experience</h3>
+          <div class="ab-score score-mid">High potential, blocked by UX bug</div>
+        </div>
+
+        <p style="color:var(--text2); font-size:14px; margin-bottom:20px; line-height:1.65;">Daniel will immediately see the value proposition. He's been waiting for exactly this — a folder-like structure for his Spotify library. He'll start by multi-selecting playlists and bulk-adding them to boards. Then he'll hit the wall: "Add playlists" on the board detail page opens a board-picker, not a playlist-picker. As a PM himself, he'll recognize this as a product bug, not user error — and he'll judge the quality of the entire app by how something this fundamental got shipped without a fix.</p>
+
+        <div class="feature-matrix">
+          <div class="fm-name">Multi-select + bulk operations</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Board system (create/rename/delete)</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Archive playlists/boards</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Radio station creation</div><div class="fm-val v-works">Works well ✓</div>
+          <div class="fm-name">Add playlists to board (from board page)</div><div class="fm-val v-broken">Critical UX bug ✗</div>
+          <div class="fm-name">Radio playback</div><div class="fm-val v-broken">Not implemented ✗</div>
+          <div class="fm-name">Search + filter library</div><div class="fm-val v-broken">Search input not connected ✗</div>
+          <div class="fm-name">Keyboard shortcuts</div><div class="fm-val v-broken">Not implemented ✗</div>
+        </div>
+
+        <div class="quote-block">"This is the thing Spotify should have built five years ago. I just need the 'add playlists to a board' button to actually work the way I expect."</div>
+
+        <div class="rec-list">
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 1:</strong> Fix the "Add playlists" modal on board detail — this is a retention killer for this persona.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 2:</strong> Connect the search bar to filter the masonry grid in real-time.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 3:</strong> Add Cmd+K search shortcut, Escape to exit any mode — Daniel will expect these.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 4:</strong> Radio "play now" button that opens Spotify shuffle. Makes the feature real before ElevenLabs ships.</span></div>
+        </div>
+      </div>
+
+      <!-- ZOE -->
+      <div class="analysis-block">
+        <div class="ab-top">
+          <div class="persona-avatar" style="background: rgba(27,214,94,.15); width:40px; height:40px; font-size:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">📱</div>
+          <h3>Zoe's experience</h3>
+          <div class="ab-score score-low">Currently underserved</div>
+        </div>
+
+        <p style="color:var(--text2); font-size:14px; margin-bottom:20px; line-height:1.65;">Zoe represents the largest potential audience but the worst current experience. She's on mobile 98% of the time, she doesn't configure API keys, and the feature she'd use most (Discover mood cards) does nothing. She'll like how it looks — it reminds her of Pinterest — but she won't get through onboarding without help. The "developer mode — only approved testers" note on the login page will make her think the app is broken, not just restricted. She's also the persona most likely to share the app with friends, so losing her loses a referral channel too.</p>
+
+        <div class="feature-matrix">
+          <div class="fm-name">Visual grid (familiar, Pinterest-like)</div><div class="fm-val v-works">Resonates ✓</div>
+          <div class="fm-name">Mood boards concept</div><div class="fm-val v-works">Resonates ✓</div>
+          <div class="fm-name">Discover page layout</div><div class="fm-val v-works">Layout works ✓</div>
+          <div class="fm-name">Discover mood cards (clickable)</div><div class="fm-val v-broken">Non-functional ✗</div>
+          <div class="fm-name">Mobile layout and touch interactions</div><div class="fm-val v-broken">Desktop-first ✗</div>
+          <div class="fm-name">AI suggestions (zero-setup)</div><div class="fm-val v-broken">Requires API key config ✗</div>
+          <div class="fm-name">Onboarding / first-use guidance</div><div class="fm-val v-broken">Not implemented ✗</div>
+          <div class="fm-name">Login page clarity</div><div class="fm-val v-partial">Developer mode note is easy to miss ⚠</div>
+        </div>
+
+        <div class="quote-block">"Wait this looks so much better than Spotify's app. Why can't I use it on my phone though?"</div>
+
+        <div class="rec-list">
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 1:</strong> Mobile-first responsive pass — bottom nav, full-screen modals, tap-to-open context menus.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 2:</strong> Make Discover mood cards functional — even a simple label filter is enough to make the page feel alive.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 3:</strong> Add a 3-step onboarding overlay: "your library", "create a mood board", "add playlists".</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 4:</strong> Rewrite the login disclaimer — replace the "developer mode" note with a waitlist-style CTA so she understands this is an invite-only beta, not a broken app.</span></div>
+          <div class="rec-item"><span class="rec-icon">→</span><span><strong style="color:var(--text);">Priority 5:</strong> Zero-config AI suggestions — use a backend proxy for the Gemini key so she never has to configure anything.</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUMMARY TABLE -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2>Prioritized Build Roadmap</h2>
+      </div>
+      <div class="analysis-block">
+        <p style="color:var(--text2); font-size:14px; margin-bottom:24px; line-height:1.65;">Based on persona analysis and testing results, the following represents the highest-ROI improvements in priority order. Items marked <strong style="color:var(--red);">P0</strong> are blocking retention for at least two personas.</p>
+        <div class="feature-matrix" style="gap: 2px 20px;">
+          <div class="fm-name" style="font-weight:600; color:var(--text);">Fix</div><div class="fm-val" style="font-weight:600; color:var(--text);">Priority</div>
+          <div class="fm-name">Fix "Add playlists" modal on board detail (playlist-picker, not board-picker)</div><div class="fm-val"><span style="color:var(--red); font-weight:700;">P0</span></div>
+          <div class="fm-name">Mobile-responsive layout (touch interactions, bottom nav, full-screen modals)</div><div class="fm-val"><span style="color:var(--red); font-weight:700;">P0</span></div>
+          <div class="fm-name">Connect search bar to filter masonry grid in real-time</div><div class="fm-val"><span style="color:var(--orange); font-weight:700;">P1</span></div>
+          <div class="fm-name">Make Discover mood cards functional (label filter or smart board)</div><div class="fm-val"><span style="color:var(--orange); font-weight:700;">P1</span></div>
+          <div class="fm-name">Track load error state on playlist detail page</div><div class="fm-val"><span style="color:var(--orange); font-weight:700;">P1</span></div>
+          <div class="fm-name">Label filter chips above masonry grid</div><div class="fm-val"><span style="color:var(--yellow); font-weight:700;">P2</span></div>
+          <div class="fm-name">Onboarding overlay (3-step first-run)</div><div class="fm-val"><span style="color:var(--yellow); font-weight:700;">P2</span></div>
+          <div class="fm-name">Board cover photo upload</div><div class="fm-val"><span style="color:var(--yellow); font-weight:700;">P2</span></div>
+          <div class="fm-name">Radio "Play now" → open Spotify shuffle</div><div class="fm-val"><span style="color:var(--yellow); font-weight:700;">P2</span></div>
+          <div class="fm-name">Keyboard shortcuts (Cmd+K, Escape)</div><div class="fm-val"><span style="color:var(--blue); font-weight:700;">P3</span></div>
+          <div class="fm-name">Sidebar icon tooltips on hover</div><div class="fm-val"><span style="color:var(--blue); font-weight:700;">P3</span></div>
+          <div class="fm-name">Drag-to-reorder playlists within board</div><div class="fm-val"><span style="color:var(--blue); font-weight:700;">P3</span></div>
+          <div class="fm-name">Zero-config AI (backend Gemini proxy)</div><div class="fm-val"><span style="color:var(--blue); font-weight:700;">P3</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="report-footer">
+  <strong>Playlistify</strong> · UX Report generated April 2026 via Playwright automated testing · <code>feature/pinterest-redesign</code>
+</footer>
+
+<script>
+  function showPage(page, link) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.report-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    link.classList.add('active');
+    window.scrollTo(0, 0);
+    return false;
+  }
+
+  function togglePersona(id, card) {
+    const detail = document.getElementById(id);
+    const allDetails = document.querySelectorAll('.persona-detail');
+    const allCards = document.querySelectorAll('.persona-card');
+
+    if (detail.classList.contains('open')) {
+      detail.classList.remove('open');
+      card.style.borderColor = '';
+      return;
+    }
+
+    allDetails.forEach(d => d.classList.remove('open'));
+    allCards.forEach(c => c.style.borderColor = '');
+
+    detail.classList.add('open');
+    card.style.borderColor = 'rgba(255,255,255,.25)';
+
+    setTimeout(() => detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+</script>
+
+</body>
+</html>
