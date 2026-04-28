@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useAppStore } from "../../context/AppStore";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import NotificationsPanel from "./NotificationsPanel";
@@ -10,6 +11,7 @@ export type Panel = "notifications" | "settings" | null;
 
 export default function AppLayout() {
   const { isAuthenticated } = useAuth();
+  const { settings } = useAppStore();
   const navigate = useNavigate();
   const [openPanel, setOpenPanel] = useState<Panel>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,8 +25,7 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="pfy-root" data-dark={false}>
-      {/* Overlay to close panels */}
+    <div className="pfy-root" data-dark={settings.darkMode}>
       {openPanel && (
         <div
           className="panel-overlay"
