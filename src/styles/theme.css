@@ -1,3 +1,4 @@
+/* Playlistify Design System – overrides TW theme */
 @custom-variant dark (&:is(.dark *));
 
 :root {

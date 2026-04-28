@@ -1,5 +1,4 @@
 import { PlaylistCard } from "./PlaylistCard";
-import { Skeleton } from "./ui/skeleton";
 import { Folder } from "lucide-react";
 import type { Playlist } from "../../types";
 
@@ -10,28 +9,20 @@ interface BentoGridProps {
   onCardClick: (playlist: Playlist) => void;
 }
 
-const skeletonSizes: Playlist["size"][] = [
-  "large",
-  "medium",
-  "medium",
-  "wide",
-  "medium",
-  "medium",
-  "tall",
-  "medium",
-  "medium",
-  "wide",
-  "medium",
-  "medium",
+const skeletonAspects = [
+  "aspect-[2/3]",
+  "aspect-[3/4]",
+  "aspect-square",
+  "aspect-[3/4]",
+  "aspect-[2/3]",
+  "aspect-square",
+  "aspect-[3/4]",
+  "aspect-[2/3]",
+  "aspect-square",
+  "aspect-[2/3]",
+  "aspect-[3/4]",
+  "aspect-square",
 ];
-
-const skeletonClasses: Record<Playlist["size"], string> = {
-  small: "col-span-1 row-span-1",
-  medium: "col-span-1 row-span-1",
-  large: "col-span-2 row-span-2",
-  wide: "col-span-2 row-span-1",
-  tall: "col-span-1 row-span-2",
-};
 
 export function BentoGrid({
   playlists,
@@ -43,42 +34,45 @@ export function BentoGrid({
     <div>
       {folderName && !isLoading && (
         <div className="mb-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500">
             Showing playlists in{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {folderName}
-            </span>
+            <span className="font-semibold text-gray-700">{folderName}</span>
           </p>
         </div>
       )}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[280px] grid-flow-dense">
+
+      <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4">
         {isLoading ? (
-          skeletonSizes.map((size, i) => (
-            <Skeleton
-              key={i}
-              className={`rounded-xl ${skeletonClasses[size]}`}
-            />
+          skeletonAspects.map((aspect, i) => (
+            <div key={i} className="break-inside-avoid mb-4">
+              <div
+                className={`${aspect} rounded-2xl bg-gray-200 animate-pulse`}
+              />
+              <div className="mt-2 h-3 w-2/3 bg-gray-200 rounded animate-pulse" />
+            </div>
           ))
         ) : playlists.length > 0 ? (
-          playlists.map((playlist) => (
-            <PlaylistCard
-              key={playlist.id}
-              playlist={playlist}
-              onCardClick={onCardClick}
-            />
+          playlists.map((playlist, i) => (
+            <div key={playlist.id} className="break-inside-avoid mb-4">
+              <PlaylistCard
+                playlist={playlist}
+                index={i}
+                onCardClick={onCardClick}
+              />
+            </div>
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <Folder className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-              No playlists in this folder
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              No playlists found
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               {folderName
                 ? `Add playlists to ${folderName}`
-                : "Try selecting a different folder"}
+                : "Try a different search"}
             </p>
           </div>
         )}

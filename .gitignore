@@ -3,3 +3,7 @@ node_modules
 dist
 .env.local
 .env
+desktop.ini
+*.png
+"playlistify redesign/"
+playlistify redesign/

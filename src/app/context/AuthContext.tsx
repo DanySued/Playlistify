@@ -6,7 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { Playlist } from "../../types";
+import type { Playlist, SpotifyAPIPlaylist } from "../../types";
 import {
   initiateSpotifyAuth,
   exchangeCodeForToken,
@@ -15,7 +15,9 @@ import {
   getSpotifyPlaylists,
   updatePlaylist as spotifyUpdatePlaylist,
   unfollowPlaylist as spotifyUnfollowPlaylist,
-  type SpotifyAPIPlaylist,
+  createPlaylist as spotifyCreatePlaylist,
+  addTracksToPlaylist as spotifyAddTracks,
+  removeTracksFromPlaylist as spotifyRemoveTracks,
 } from "../../lib/spotify";
 
 export interface SpotifyUser {
@@ -32,39 +34,36 @@ export interface SpotifyUser {
 interface AuthContextType {
   user: SpotifyUser | null;
   isAuthenticated: boolean;
-  spotifyPlaylists: Playlist[];
+  playlists: Playlist[];
+  setPlaylists: React.Dispatch<React.SetStateAction<Playlist[]>>;
   accessToken: string | null;
+  isLoadingPlaylists: boolean;
   loginWithSpotify: () => Promise<void>;
   loginWithCallback: (code: string) => Promise<void>;
-  loginWithEmail: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
-  updatePlaylist: (
-    id: string,
-    updates: { name?: string; description?: string; imageUrl?: string },
-  ) => Promise<void>;
+  updatePlaylist: (id: string, updates: { name?: string; description?: string; imageBase64?: string }) => Promise<void>;
   deletePlaylist: (id: string) => Promise<void>;
+  deleteMultiplePlaylists: (ids: string[]) => Promise<void>;
+  createPlaylist: (name: string, description: string, isPublic: boolean) => Promise<Playlist>;
+  duplicatePlaylist: (id: string) => Promise<Playlist>;
+  refreshPlaylists: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Repeating 8-item block that tiles perfectly in a 4-column grid with no gaps:
-// [large(2×2), med, med, med, med, wide(2×1), med, med]
-function assignSize(index: number): Playlist["size"] {
-  const pos = index % 8;
-  if (pos === 0) return "large";
-  if (pos === 5) return "wide";
-  return "medium";
-}
-
-function apiPlaylistToLocal(p: SpotifyAPIPlaylist, index: number): Playlist {
+function apiPlaylistToLocal(p: SpotifyAPIPlaylist): Playlist {
   return {
     id: p.id,
     name: p.name,
     description: p.description ?? "",
     imageUrl: p.images?.[0]?.url ?? "",
     spotifyUrl: p.external_urls?.spotify ?? "",
-    size: assignSize(index),
+    boardIds: [],
+    labelIds: [],
+    isPublic: p.public,
+    isCollaborative: p.collaborative,
+    ownerId: p.owner?.id ?? "",
+    totalTracks: p.tracks?.total ?? 0,
   };
 }
 
@@ -77,13 +76,7 @@ function makeInitials(name: string): string {
     .toUpperCase();
 }
 
-// ─── Persist helpers ───────────────────────────────────────────────────────
-
-function saveTokens(
-  accessToken: string,
-  refreshToken: string,
-  expiresAt: number,
-) {
+function saveTokens(accessToken: string, refreshToken: string, expiresAt: number) {
   localStorage.setItem("spotify_access_token", accessToken);
   localStorage.setItem("spotify_refresh_token", refreshToken);
   localStorage.setItem("spotify_expires_at", String(expiresAt));
@@ -97,7 +90,18 @@ function clearTokens() {
   localStorage.removeItem("spotify_playlists");
 }
 
-// ───────────────────────────────────────────────────────────────────────────
+function mergePlaylists(fresh: Playlist[], saved: Playlist[]): Playlist[] {
+  const savedMap = new Map(saved.map((p) => [p.id, p]));
+  return fresh.map((fp) => {
+    const sp = savedMap.get(fp.id);
+    if (!sp) return fp;
+    return {
+      ...fp,
+      boardIds: sp.boardIds ?? [],
+      labelIds: sp.labelIds ?? [],
+    };
+  });
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SpotifyUser | null>(() => {
@@ -105,16 +109,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return saved ? (JSON.parse(saved) as SpotifyUser) : null;
   });
 
-  const [spotifyPlaylists, setSpotifyPlaylists] = useState<Playlist[]>(() => {
+  const [playlists, setPlaylists] = useState<Playlist[]>(() => {
     const saved = localStorage.getItem("spotify_playlists");
     return saved ? (JSON.parse(saved) as Playlist[]) : [];
   });
 
   const [accessToken, setAccessToken] = useState<string | null>(() =>
-    localStorage.getItem("spotify_access_token"),
+    localStorage.getItem("spotify_access_token")
   );
 
-  // ── Proactive token refresh ──────────────────────────────────────────────
+  const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(false);
+
+  // ── Token refresh ────────────────────────────────────────────────────────
   const doRefresh = useCallback(async () => {
     const rt = localStorage.getItem("spotify_refresh_token");
     if (!rt) return;
@@ -126,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       clearTokens();
       setUser(null);
-      setSpotifyPlaylists([]);
+      setPlaylists([]);
       setAccessToken(null);
     }
   }, []);
@@ -134,21 +140,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const expiresAt = Number(localStorage.getItem("spotify_expires_at") ?? 0);
     if (!expiresAt || !accessToken) return;
-
-    const msUntilExpiry = expiresAt - Date.now();
-    // Refresh 5 minutes before expiry
-    const delay = Math.max(msUntilExpiry - 5 * 60 * 1000, 0);
+    const delay = Math.max(expiresAt - Date.now() - 5 * 60 * 1000, 0);
     const timer = setTimeout(doRefresh, delay);
     return () => clearTimeout(timer);
   }, [accessToken, doRefresh]);
 
-  // ── Spotify OAuth: step 1 — redirect to Spotify ─────────────────────────
+  // ── Fetch playlists ──────────────────────────────────────────────────────
+  const refreshPlaylists = useCallback(async () => {
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token) return;
+    setIsLoadingPlaylists(true);
+    try {
+      const raw = await getSpotifyPlaylists(token);
+      const fresh = raw.map(apiPlaylistToLocal);
+      setPlaylists((prev) => {
+        const merged = mergePlaylists(fresh, prev);
+        localStorage.setItem("spotify_playlists", JSON.stringify(merged));
+        return merged;
+      });
+    } finally {
+      setIsLoadingPlaylists(false);
+    }
+  }, []);
+
+  // ── Spotify OAuth ────────────────────────────────────────────────────────
   const loginWithSpotify = async () => {
-    await initiateSpotifyAuth(); // browser redirects — nothing after this runs
+    await initiateSpotifyAuth();
   };
 
-  // ── Spotify OAuth: step 2 — called by CallbackPage ──────────────────────
-  const loginWithCallback = async (code: string) => {
+  const loginWithCallback = useCallback(async (code: string) => {
     const tokens = await exchangeCodeForToken(code);
     const expiresAt = Date.now() + tokens.expires_in * 1000;
     saveTokens(tokens.access_token, tokens.refresh_token, expiresAt);
@@ -168,97 +188,128 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(spotifyUser);
     localStorage.setItem("spotify_user", JSON.stringify(spotifyUser));
 
-    const apiPlaylists = await getSpotifyPlaylists(tokens.access_token);
-    const playlists = apiPlaylists.map(apiPlaylistToLocal);
-    setSpotifyPlaylists(playlists);
-    localStorage.setItem("spotify_playlists", JSON.stringify(playlists));
-  };
+    const raw = await getSpotifyPlaylists(tokens.access_token);
+    const fresh = raw.map(apiPlaylistToLocal);
+    const saved = localStorage.getItem("spotify_playlists");
+    const savedList: Playlist[] = saved ? JSON.parse(saved) : [];
+    const merged = mergePlaylists(fresh, savedList);
+    setPlaylists(merged);
+    localStorage.setItem("spotify_playlists", JSON.stringify(merged));
+  }, []);
 
-  // ── Email login (mock) ───────────────────────────────────────────────────
-  const loginWithEmail = async (email: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const raw = email.split("@")[0].replace(/[._-]/g, " ");
-    const name = raw
-      .split(" ")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-    setUser({
-      id: "email-user-1",
-      name,
-      email,
-      initials: makeInitials(name),
-      country: "United States",
-      followers: 0,
-      spotifyConnected: false,
-    });
-  };
-
-  // ── Signup (mock) ────────────────────────────────────────────────────────
-  const signup = async (name: string, email: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setUser({
-      id: "new-user-1",
-      name,
-      email,
-      initials: makeInitials(name),
-      country: "United States",
-      followers: 0,
-      spotifyConnected: false,
-    });
-  };
-
-  // ── Logout ───────────────────────────────────────────────────────────────
-  const logout = () => {
+  const logout = useCallback(() => {
     clearTokens();
     setUser(null);
-    setSpotifyPlaylists([]);
+    setPlaylists([]);
     setAccessToken(null);
-  };
+  }, []);
 
-  // ── Update playlist (name, description, imageUrl) ────────────────────────
-  const updatePlaylist = async (
+  // ── Playlist mutations ───────────────────────────────────────────────────
+  const updatePlaylist = useCallback(async (
     id: string,
-    updates: { name?: string; description?: string; imageUrl?: string },
+    updates: { name?: string; description?: string; imageBase64?: string },
   ) => {
-    if (accessToken) {
-      const spotifyUpdates: { name?: string; description?: string } = {};
-      if (updates.name !== undefined) spotifyUpdates.name = updates.name;
-      if (updates.description !== undefined)
-        spotifyUpdates.description = updates.description;
-      if (Object.keys(spotifyUpdates).length > 0)
-        await spotifyUpdatePlaylist(accessToken, id, spotifyUpdates);
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token) throw new Error("Not authenticated");
+    const { imageBase64, ...rest } = updates;
+    if (Object.keys(rest).length) await spotifyUpdatePlaylist(token, id, rest);
+    if (imageBase64) {
+      const { uploadPlaylistCover } = await import("../../lib/spotify");
+      await uploadPlaylistCover(token, id, imageBase64);
     }
-    setSpotifyPlaylists((prev) => {
-      const next = prev.map((p) => (p.id === id ? { ...p, ...updates } : p));
+    setPlaylists((prev) => {
+      const next = prev.map((p) =>
+        p.id === id ? { ...p, ...rest } : p
+      );
       localStorage.setItem("spotify_playlists", JSON.stringify(next));
       return next;
     });
-  };
+  }, []);
 
-  // ── Delete (unfollow) playlist ───────────────────────────────────────────
-  const deletePlaylist = async (id: string) => {
-    if (accessToken) await spotifyUnfollowPlaylist(accessToken, id);
-    setSpotifyPlaylists((prev) => {
+  const deletePlaylist = useCallback(async (id: string) => {
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token) throw new Error("Not authenticated");
+    await spotifyUnfollowPlaylist(token, id);
+    setPlaylists((prev) => {
       const next = prev.filter((p) => p.id !== id);
       localStorage.setItem("spotify_playlists", JSON.stringify(next));
       return next;
     });
-  };
+  }, []);
+
+  const deleteMultiplePlaylists = useCallback(async (ids: string[]) => {
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token) throw new Error("Not authenticated");
+    await Promise.all(ids.map((id) => spotifyUnfollowPlaylist(token, id)));
+    setPlaylists((prev) => {
+      const next = prev.filter((p) => !ids.includes(p.id));
+      localStorage.setItem("spotify_playlists", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const createPlaylist = useCallback(async (
+    name: string,
+    description: string,
+    isPublic: boolean,
+  ): Promise<Playlist> => {
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token || !user) throw new Error("Not authenticated");
+    const created = await spotifyCreatePlaylist(token, user.id, name, description, isPublic);
+    const newPl = apiPlaylistToLocal(created);
+    setPlaylists((prev) => {
+      const next = [newPl, ...prev];
+      localStorage.setItem("spotify_playlists", JSON.stringify(next));
+      return next;
+    });
+    return newPl;
+  }, [user]);
+
+  const duplicatePlaylist = useCallback(async (id: string): Promise<Playlist> => {
+    const token = localStorage.getItem("spotify_access_token");
+    if (!token || !user) throw new Error("Not authenticated");
+    const { getSpotifyPlaylistTracks } = await import("../../lib/spotify");
+    const original = playlists.find((p) => p.id === id);
+    if (!original) throw new Error("Playlist not found");
+    const tracks = await getSpotifyPlaylistTracks(token, id);
+    const uris = tracks
+      .map((t) => t.track?.uri)
+      .filter((u): u is string => !!u && !u.startsWith("spotify:local:"));
+    const created = await spotifyCreatePlaylist(
+      token,
+      user.id,
+      `${original.name} (Copy)`,
+      original.description,
+      false,
+    );
+    if (uris.length) await spotifyAddTracks(token, created.id, uris);
+    const newPl = apiPlaylistToLocal(created);
+    setPlaylists((prev) => {
+      const next = [newPl, ...prev];
+      localStorage.setItem("spotify_playlists", JSON.stringify(next));
+      return next;
+    });
+    return newPl;
+  }, [playlists, user]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: user !== null,
-        spotifyPlaylists,
+        isAuthenticated: !!user,
+        playlists,
+        setPlaylists,
         accessToken,
+        isLoadingPlaylists,
         loginWithSpotify,
         loginWithCallback,
-        loginWithEmail,
-        signup,
         logout,
         updatePlaylist,
         deletePlaylist,
+        deleteMultiplePlaylists,
+        createPlaylist,
+        duplicatePlaylist,
+        refreshPlaylists,
       }}
     >
       {children}
@@ -268,6 +319,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }

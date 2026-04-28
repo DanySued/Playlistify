@@ -1,73 +1,47 @@
-import { Music, Plus, User, LogIn, Sun, Moon } from "lucide-react";
-import { Button } from "./ui/button";
+import { User, Search } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "next-themes";
 
-export function Navigation() {
+interface NavigationProps {
+  searchQuery?: string;
+  onSearch?: (q: string) => void;
+}
+
+export function Navigation({ searchQuery = "", onSearch }: NavigationProps) {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <Music className="w-8 h-8 text-[#1DB954]" />
-            <span className="font-semibold text-xl text-gray-900 dark:text-gray-100">
-              Playlistify
-            </span>
-          </Link>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+        <Link to="/" className="shrink-0">
+          <span className="font-bold text-xl text-[#E60023]">Playlistify</span>
+        </Link>
 
-          {/* Center action */}
-          {isAuthenticated ? (
-            <Button
-              className="hidden sm:flex bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6 py-2 rounded-lg shadow-sm items-center gap-2"
-              onClick={() => navigate("/new-playlist")}
-            >
-              <Plus className="w-4 h-4" />
-              New Playlist
-            </Button>
-          ) : (
-            <Link to="/login" className="hidden sm:block">
-              <Button className="bg-[#1DB954] hover:bg-[#1aa34a] text-white px-6 py-2 rounded-lg shadow-sm flex items-center gap-2">
-                <LogIn className="w-4 h-4" />
-                Sign in
-              </Button>
-            </Link>
-          )}
-
-          {/* Right controls */}
-          <div className="flex items-center gap-2">
-            {/* Dark mode toggle */}
-            <button
-              aria-label="Toggle dark mode"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-            >
-              {theme === "dark" ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </button>
-
-            {/* Profile / avatar */}
-            <button
-              aria-label="View profile"
-              onClick={() => navigate("/profile")}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1DB954] to-[#1aa34a] flex items-center justify-center hover:shadow-lg transition-shadow text-white font-bold text-sm"
-            >
-              {isAuthenticated && user?.initials ? (
-                user.initials
-              ) : (
-                <User className="w-5 h-5 text-white" />
-              )}
-            </button>
+        <div className="flex-1 max-w-2xl mx-auto">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search playlists..."
+              value={searchQuery}
+              onChange={(e) => onSearch?.(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-full text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
+            />
           </div>
         </div>
+
+        <button
+          aria-label="View profile"
+          onClick={() => navigate("/profile")}
+          className="shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors text-gray-700 font-bold text-sm overflow-hidden"
+        >
+          {isAuthenticated && user?.initials ? (
+            <span>{user.initials}</span>
+          ) : (
+            <User className="w-5 h-5" />
+          )}
+        </button>
       </div>
     </nav>
   );

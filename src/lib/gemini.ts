@@ -1,5 +1,23 @@
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const DEFAULT_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+
+function geminiUrl(apiKey: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+}
+
+export async function getGeminiSuggestion(apiKey: string, prompt: string): Promise<string> {
+  const url = geminiUrl(apiKey || DEFAULT_KEY);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 1.1, maxOutputTokens: 200 },
+    }),
+  });
+  if (!res.ok) throw new Error("Gemini API error");
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+}
 
 export async function suggestPlaylistDescriptions(
   playlistName: string,

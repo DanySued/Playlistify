@@ -1,28 +1,47 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { AuthProvider } from "./context/AuthContext";
+import { AppStoreProvider } from "./context/AppStore";
+import { Toaster } from "sonner";
+import AppLayout from "./components/layout/AppLayout";
 import HomePage from "./pages/HomePage";
+import BoardsPage from "./pages/BoardsPage";
+import BoardDetailPage from "./pages/BoardDetailPage";
+import PlaylistDetailPage from "./pages/PlaylistDetailPage";
+import DiscoverPage from "./pages/DiscoverPage";
+import RadioPage from "./pages/RadioPage";
 import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import ProfilePage from "./pages/ProfilePage";
-import NewPlaylistPage from "./pages/NewPlaylistPage";
-import NewFolderPage from "./pages/NewFolderPage";
-import SettingsPage from "./pages/SettingsPage";
 import CallbackPage from "./pages/CallbackPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/new-playlist" element={<NewPlaylistPage />} />
-          <Route path="/new-folder" element={<NewFolderPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/callback" element={<CallbackPage />} />
-        </Routes>
+        <AppStoreProvider>
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                color: "var(--text)",
+                borderRadius: "12px",
+              },
+            }}
+          />
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/callback" element={<CallbackPage />} />
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/boards" element={<BoardsPage />} />
+              <Route path="/boards/:id" element={<BoardDetailPage />} />
+              <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
+              <Route path="/discover" element={<DiscoverPage />} />
+              <Route path="/radio" element={<RadioPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AppStoreProvider>
       </AuthProvider>
     </BrowserRouter>
   );
