@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Images,
@@ -14,6 +14,21 @@ import { DescriptionEditor } from "./tools/DescriptionEditor";
 import type { Playlist, Folder } from "../../types";
 
 type Tool = "gallery" | "description" | "boards" | null;
+
+function ToolPane({ paneKey, children, className }: { paneKey: string; children: ReactNode; className?: string }) {
+  return (
+    <motion.div
+      key={paneKey}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.18 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 interface PlaylistToolsPanelProps {
   playlist: Playlist;
@@ -154,13 +169,7 @@ export function PlaylistToolsPanel({
         <div className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             {activeTool === "gallery" && (
-              <motion.div
-                key="gallery"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-              >
+              <ToolPane paneKey="gallery">
                 <ImageGallery
                   playlistId={playlist.id}
                   playlistName={playlist.name}
@@ -168,17 +177,11 @@ export function PlaylistToolsPanel({
                   onCoverUpdated={(url) => onCoverUpdated(playlist.id, url)}
                   onSaved={onClose}
                 />
-              </motion.div>
+              </ToolPane>
             )}
 
             {activeTool === "description" && (
-              <motion.div
-                key="description"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-              >
+              <ToolPane paneKey="description">
                 <DescriptionEditor
                   playlistId={playlist.id}
                   initialName={playlist.name}
@@ -187,18 +190,11 @@ export function PlaylistToolsPanel({
                     onUpdatePlaylist(playlist.id, { name, description })
                   }
                 />
-              </motion.div>
+              </ToolPane>
             )}
 
             {activeTool === "boards" && (
-              <motion.div
-                key="boards"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-                className="h-full overflow-y-auto p-4 space-y-2"
-              >
+              <ToolPane paneKey="boards" className="h-full overflow-y-auto p-4 space-y-2">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
                   Add to board
                 </p>
@@ -244,7 +240,7 @@ export function PlaylistToolsPanel({
                     )}
                   </button>
                 ))}
-              </motion.div>
+              </ToolPane>
             )}
           </AnimatePresence>
         </div>

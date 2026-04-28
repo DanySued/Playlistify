@@ -117,7 +117,6 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
       <div
         className={`pin${isSelected ? " pin-selected" : ""}${deleting ? " opacity-50 pointer-events-none" : ""}`}
         onClick={handleCardClick}
-        style={{ opacity: deleting ? 0.5 : 1 }}
       >
         {selectionMode && (
           <div
