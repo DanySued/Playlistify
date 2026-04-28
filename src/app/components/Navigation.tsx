@@ -26,41 +26,35 @@ export function Navigation() {
 
   const isLanding = location.pathname === "/";
 
-  const navBg = isLanding
-    ? "bg-[#0a0a0a]/80 border-white/5"
-    : "bg-white/80 dark:bg-gray-900/80 border-gray-200 dark:border-gray-700";
-
-  const logoTextClass = isLanding
-    ? "text-white"
-    : "text-gray-900 dark:text-gray-100";
-
-  const linkClass = isLanding
-    ? "text-white/60 hover:text-white"
-    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white";
-
-  const iconBtnClass = isLanding
-    ? "bg-white/8 hover:bg-white/12 text-white/70"
-    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300";
-
-  const mobileMenuBg = isLanding
-    ? "bg-[#111111] border-white/8 shadow-2xl shadow-black/60"
-    : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-lg";
-
-  const mobileLinkClass = isLanding
-    ? "text-white/70 hover:text-white hover:bg-white/6"
-    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800";
+  const s = isLanding
+    ? {
+        nav: "bg-[#0a0a0a]/80 border-white/5",
+        logo: "text-white",
+        link: "text-white/60 hover:text-white",
+        icon: "bg-white/8 hover:bg-white/12 text-white/70",
+        drawer: "bg-[#111111] border-white/8 shadow-2xl shadow-black/60",
+        mobileLink: "text-white/70 hover:text-white hover:bg-white/6",
+      }
+    : {
+        nav: "bg-white/80 dark:bg-gray-900/80 border-gray-200 dark:border-gray-700",
+        logo: "text-gray-900 dark:text-gray-100",
+        link: "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white",
+        icon: "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300",
+        drawer: "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-lg",
+        mobileLink: "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800",
+      };
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${navBg}`}
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${s.nav}`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
               <Music className="w-7 h-7 text-[#1DB954]" />
-              <span className={`font-semibold text-lg ${logoTextClass}`}>
+              <span className={`font-semibold text-lg ${s.logo}`}>
                 Playlistify
               </span>
             </Link>
@@ -71,13 +65,13 @@ export function Navigation() {
                 <>
                   <a
                     href="#features"
-                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${linkClass}`}
+                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${s.link}`}
                   >
                     Features
                   </a>
                   <a
                     href="#how-it-works"
-                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${linkClass}`}
+                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${s.link}`}
                   >
                     How it works
                   </a>
@@ -87,7 +81,7 @@ export function Navigation() {
               {isAuthenticated && (
                 <Link
                   to="/app"
-                  className={`px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${linkClass}`}
+                  className={`px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-1.5 ${s.link}`}
                 >
                   <LayoutGrid className="w-4 h-4" />
                   My Library
@@ -110,7 +104,7 @@ export function Navigation() {
                   <Link to="/login">
                     <Button
                       variant="ghost"
-                      className={`text-sm px-4 py-2 rounded-lg transition-colors ${linkClass}`}
+                      className={`text-sm px-4 py-2 rounded-lg transition-colors ${s.link}`}
                     >
                       Log in
                     </Button>
@@ -127,7 +121,7 @@ export function Navigation() {
               <button
                 aria-label="Toggle theme"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${iconBtnClass}`}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${s.icon}`}
               >
                 {theme === "dark" ? (
                   <Sun className="w-4 h-4" />
@@ -153,7 +147,7 @@ export function Navigation() {
               <button
                 aria-label="Toggle theme"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${iconBtnClass}`}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${s.icon}`}
               >
                 {theme === "dark" ? (
                   <Sun className="w-4 h-4" />
@@ -164,7 +158,7 @@ export function Navigation() {
               <button
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
                 onClick={() => setMenuOpen((v) => !v)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${iconBtnClass}`}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${s.icon}`}
               >
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
@@ -195,7 +189,7 @@ export function Navigation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className={`fixed top-[65px] left-0 right-0 z-40 border-b ${mobileMenuBg} md:hidden`}
+            className={`fixed top-[65px] left-0 right-0 z-40 border-b ${s.drawer} md:hidden`}
           >
             <div className="px-4 py-3 flex flex-col gap-1">
               {isAuthenticated ? (
@@ -203,7 +197,7 @@ export function Navigation() {
                   <Link
                     to="/app"
                     onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                   >
                     <LayoutGrid className="w-4 h-4 opacity-60" />
                     My Library
@@ -221,7 +215,7 @@ export function Navigation() {
                   <Link
                     to="/profile"
                     onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                   >
                     <User className="w-4 h-4 opacity-60" />
                     Profile
@@ -229,7 +223,7 @@ export function Navigation() {
                   <Link
                     to="/settings"
                     onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                   >
                     <Settings className="w-4 h-4 opacity-60" />
                     Settings
@@ -242,21 +236,21 @@ export function Navigation() {
                       <a
                         href="#features"
                         onClick={() => setMenuOpen(false)}
-                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                       >
                         Features
                       </a>
                       <a
                         href="#how-it-works"
                         onClick={() => setMenuOpen(false)}
-                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                       >
                         How it works
                       </a>
                       <Link
                         to="/app"
                         onClick={() => setMenuOpen(false)}
-                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                        className={`px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                       >
                         Browse demo
                       </Link>
@@ -265,7 +259,7 @@ export function Navigation() {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className={`px-4 py-3 rounded-xl text-sm transition-colors ${mobileLinkClass}`}
+                    className={`px-4 py-3 rounded-xl text-sm transition-colors ${s.mobileLink}`}
                   >
                     <LogIn className="w-4 h-4 inline mr-2 opacity-60" />
                     Log in

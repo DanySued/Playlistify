@@ -63,6 +63,21 @@ const steps = [
 
 const previewPlaylists = mockPlaylists.slice(0, 8);
 
+// Bento layout for the preview grid: index → col/row span classes
+const PREVIEW_SPANS = [
+  "col-span-2 row-span-2",        // 0 large
+  "col-span-1 row-span-1",        // 1
+  "col-span-1 row-span-1",        // 2
+  "col-span-2 row-span-1",        // 3 wide
+  "col-span-1 row-span-1",        // 4
+  "col-span-1 row-span-2 hidden sm:block", // 5 tall
+  "col-span-1 row-span-1",        // 6
+  "col-span-1 row-span-1",        // 7
+];
+
+const ghostBtn =
+  "bg-transparent border border-white/15 hover:bg-white/8 text-white/70 hover:text-white font-medium rounded-xl transition-all duration-200";
+
 export default function LandingPage() {
   const navigate = useNavigate();
 
@@ -109,7 +124,7 @@ export default function LandingPage() {
               </Button>
               <button
                 onClick={() => navigate("/signup")}
-                className="w-full sm:w-auto bg-transparent border border-white/15 hover:bg-white/8 text-white/70 hover:text-white px-8 py-[22px] text-base rounded-xl transition-all duration-200 font-medium"
+                className={`w-full sm:w-auto px-8 py-[22px] text-base ${ghostBtn}`}
               >
                 Create free account
               </button>
@@ -169,22 +184,10 @@ export default function LandingPage() {
 
             {/* Mini grid preview */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 auto-rows-[140px] sm:auto-rows-[180px] grid-flow-dense">
-              {previewPlaylists.map((playlist, i) => {
-                const isLarge = i === 0;
-                const isWide = i === 3;
-                const isTall = i === 5;
-                const cls = isLarge
-                  ? "col-span-2 row-span-2"
-                  : isWide
-                    ? "col-span-2 row-span-1"
-                    : isTall
-                      ? "col-span-1 row-span-2 hidden sm:block"
-                      : "col-span-1 row-span-1";
-
-                return (
+              {previewPlaylists.map((playlist, i) => (
                   <div
                     key={playlist.id}
-                    className={`relative overflow-hidden rounded-xl ${cls}`}
+                    className={`relative overflow-hidden rounded-xl ${PREVIEW_SPANS[i]}`}
                   >
                     <ImageWithFallback
                       src={playlist.imageUrl}
@@ -198,8 +201,7 @@ export default function LandingPage() {
                       </p>
                     </div>
                   </div>
-                );
-              })}
+            ))}
             </div>
           </motion.div>
         </div>
@@ -314,7 +316,7 @@ export default function LandingPage() {
               </Button>
               <button
                 onClick={() => navigate("/signup")}
-                className="w-full sm:w-auto bg-transparent border border-white/15 hover:bg-white/8 text-white/70 hover:text-white px-8 py-[18px] text-base rounded-xl transition-all duration-200 font-medium"
+                className={`w-full sm:w-auto px-8 py-[18px] text-base ${ghostBtn}`}
               >
                 Create free account
               </button>
