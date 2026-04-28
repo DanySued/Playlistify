@@ -1,19 +1,12 @@
 import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { sizeClasses } from "./BentoGrid";
 import type { Playlist } from "../../types";
 
 interface PlaylistCardProps {
   playlist: Playlist;
   onCardClick: (playlist: Playlist) => void;
 }
-
-const sizeClasses: Record<Playlist["size"], string> = {
-  small: "col-span-1 row-span-1",
-  medium: "col-span-1 row-span-1",
-  large: "col-span-2 row-span-2",
-  wide: "col-span-2 row-span-1",
-  tall: "col-span-1 row-span-2",
-};
 
 const variants = {
   card: {
@@ -52,10 +45,12 @@ export function PlaylistCard({ playlist, onCardClick }: PlaylistCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
       </div>
 
-      <div className="absolute inset-0 p-6 flex flex-col justify-end">
-        <h3 className="text-white font-bold text-2xl mb-2">{name}</h3>
+      <div className="absolute inset-0 p-3 sm:p-4 lg:p-6 flex flex-col justify-end">
+        <h3 className="text-white font-bold text-base sm:text-lg lg:text-2xl mb-1 sm:mb-2 line-clamp-2">
+          {name}
+        </h3>
         <motion.p
-          className="text-white/90 text-sm leading-relaxed"
+          className="text-white/85 text-xs sm:text-sm leading-relaxed line-clamp-2"
           variants={variants.description}
           transition={{ duration: 0.2 }}
         >

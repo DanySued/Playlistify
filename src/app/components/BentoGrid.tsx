@@ -25,12 +25,13 @@ const skeletonSizes: Playlist["size"][] = [
   "medium",
 ];
 
-const skeletonClasses: Record<Playlist["size"], string> = {
+// Responsive: mobile = 1 col uniform, tablet = 2 col limited, desktop = 4 col full bento
+export const sizeClasses: Record<Playlist["size"], string> = {
   small: "col-span-1 row-span-1",
   medium: "col-span-1 row-span-1",
-  large: "col-span-2 row-span-2",
-  wide: "col-span-2 row-span-1",
-  tall: "col-span-1 row-span-2",
+  large: "col-span-1 row-span-1 sm:col-span-2 sm:row-span-1 lg:col-span-2 lg:row-span-2",
+  wide: "col-span-1 row-span-1 sm:col-span-2 sm:row-span-1 lg:col-span-2 lg:row-span-1",
+  tall: "col-span-1 row-span-1 lg:col-span-1 lg:row-span-2",
 };
 
 export function BentoGrid({
@@ -51,12 +52,12 @@ export function BentoGrid({
           </p>
         </div>
       )}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[280px] grid-flow-dense">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 auto-rows-[200px] sm:auto-rows-[240px] lg:auto-rows-[280px] grid-flow-dense">
         {isLoading ? (
           skeletonSizes.map((size, i) => (
             <Skeleton
               key={i}
-              className={`rounded-xl ${skeletonClasses[size]}`}
+              className={`rounded-xl ${sizeClasses[size]}`}
             />
           ))
         ) : playlists.length > 0 ? (
