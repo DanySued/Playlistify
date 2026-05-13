@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   MoreHorizontal, Edit3, Trash2, Copy, BookmarkPlus,
-  Tag, Music, Check,
+  Tag, Music, Check, ListMusic,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useAppStore } from "../context/AppStore";
@@ -177,6 +177,10 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
 
       {showCtx && (
         <div ref={ctxRef} className="ctx-menu" style={{ top: ctxPos.y, left: ctxPos.x }}>
+          <div className="ctx-it" onClick={() => { setShowCtx(false); navigate(`/playlist/${playlist.id}`); }}>
+            <ListMusic size={18} /> View tracks
+          </div>
+          <div className="ctx-sep" />
           <div className="ctx-it" onClick={() => { setShowCtx(false); setModal("save"); }}>
             <BookmarkPlus size={18} /> Add to board
           </div>

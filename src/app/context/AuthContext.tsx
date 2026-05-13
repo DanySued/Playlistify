@@ -163,6 +163,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (accessToken) refreshPlaylists();
+  }, [accessToken, refreshPlaylists]);
+
   // ── Spotify OAuth ────────────────────────────────────────────────────────
   const loginWithSpotify = async () => {
     await initiateSpotifyAuth();
