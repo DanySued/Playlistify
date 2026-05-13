@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Build output
+dist/
+build/
+.vite/
+
+# Lock files
+package-lock.json
+backend/package-lock.json
+
+# Shadcn/Radix UI wrappers — generated, never edited
+src/app/components/ui/
+
+# Docs / personas — not relevant to coding tasks
+docs/
+
+# Static assets
+public/
+
+# Config boilerplate
+postcss.config.mjs
+
+# Env
+.env*
