@@ -158,11 +158,9 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
 
         <div className="pin-info">
           <div className="pin-name">{playlist.name}</div>
-          {playlist.totalTracks !== undefined && (
-            <div className="pin-meta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <Music size={11} /> {playlist.totalTracks} tracks
-            </div>
-          )}
+          <div className="pin-meta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <Music size={11} /> {playlist.totalTracks ?? "?"} tracks
+          </div>
           {myLabels.length > 0 && (
             <div className="pin-labels">
               {myLabels.slice(0, 3).map((l) => (
