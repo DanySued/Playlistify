@@ -148,13 +148,13 @@ export async function getSpotifyPlaylistTracks(
 ): Promise<SpotifyAPITrack[]> {
   const all: SpotifyAPITrack[] = [];
   let url: string | null =
-    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100&fields=next,items(added_at,track(id,uri,name,artists,album,duration_ms,preview_url,is_local))`;
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
 
   while (url) {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (!res.ok) break;
+    if (!res.ok) throw new Error(`Spotify ${res.status}`);
     const data = await res.json();
     all.push(...(data.items ?? []));
     url = data.next ?? null;

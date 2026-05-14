@@ -110,6 +110,8 @@ export default function PlaylistDetailPage() {
 
   useEffect(() => {
     if (!id || !accessToken) return;
+    const expiresAt = Number(localStorage.getItem("spotify_expires_at") ?? 0);
+    if (expiresAt && expiresAt < Date.now()) return;
     setLoadingTracks(true);
     getSpotifyPlaylistTracks(accessToken, id)
       .then((raw) => {
