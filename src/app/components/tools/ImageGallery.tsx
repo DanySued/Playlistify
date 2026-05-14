@@ -5,6 +5,12 @@ import { toast } from "sonner";
 
 const PEXELS_API_KEY = import.meta.env.VITE_PEXELS_API_KEY as string;
 
+interface PexelsPhoto {
+  src: string;
+  width: number;
+  height: number;
+}
+
 interface ImageGalleryProps {
   playlistId: string;
   playlistName: string;
@@ -39,6 +45,68 @@ async function imageUrlToBase64Jpeg(url: string): Promise<string> {
   });
 }
 
+function GalleryImage({
+  photo,
+  selected,
+  onClick,
+}: {
+  photo: PexelsPhoto;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div className="break-inside-avoid mb-2">
+      <button
+        onClick={onClick}
+        className="relative w-full overflow-hidden rounded-xl group focus:outline-none"
+        style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
+      >
+        {!loaded && (
+          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-xl" />
+        )}
+        <img
+          src={photo.src}
+          alt=""
+          loading="lazy"
+          className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+          onLoad={() => setLoaded(true)}
+          onError={(e) => {
+            const wrapper = (e.target as HTMLImageElement).closest(
+              ".break-inside-avoid",
+            );
+            if (wrapper) (wrapper as HTMLElement).style.display = "none";
+          }}
+        />
+        {selected ? (
+          <div className="absolute inset-0 ring-3 ring-[#1DB954] rounded-xl bg-[#1DB954]/20 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-full bg-[#1DB954] flex items-center justify-center shadow">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={3}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+          </div>
+        ) : (
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors rounded-xl" />
+        )}
+      </button>
+    </div>
+  );
+}
+
 export function ImageGallery({
   playlistId,
   playlistName,
@@ -46,7 +114,7 @@ export function ImageGallery({
   onCoverUpdated,
   onSaved,
 }: ImageGalleryProps) {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<PexelsPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -55,6 +123,7 @@ export function ImageGallery({
   const fetchImages = async () => {
     setLoading(true);
     setError(false);
+    setSelected(null);
     try {
       const query = encodeURIComponent(`${playlistName} aesthetic`);
       const res = await fetch(
@@ -64,7 +133,11 @@ export function ImageGallery({
       const data = await res.json();
       if (!data.photos?.length) throw new Error("No images");
       setImages(
-        data.photos.map((p: { src: { large: string } }) => p.src.large),
+        data.photos.map((p: { src: { large: string }; width: number; height: number }) => ({
+          src: p.src.large,
+          width: p.width,
+          height: p.height,
+        })),
       );
     } catch {
       setError(true);
@@ -129,48 +202,13 @@ export function ImageGallery({
       </div>
       <div className="px-4 pb-20">
         <div className="columns-2 sm:columns-3 gap-2">
-          {images.map((src) => (
-            <div key={src} className="break-inside-avoid mb-2">
-              <button
-                onClick={() => setSelected(src === selected ? null : src)}
-                className="relative w-full overflow-hidden rounded-xl group focus:outline-none"
-              >
-                <img
-                  src={src}
-                  alt=""
-                  loading="lazy"
-                  className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => {
-                    const wrapper = (e.target as HTMLImageElement).closest(
-                      ".break-inside-avoid",
-                    );
-                    if (wrapper)
-                      (wrapper as HTMLElement).style.display = "none";
-                  }}
-                />
-                {selected === src ? (
-                  <div className="absolute inset-0 ring-3 ring-[#1DB954] rounded-xl bg-[#1DB954]/20 flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full bg-[#1DB954] flex items-center justify-center shadow">
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors rounded-xl" />
-                )}
-              </button>
-            </div>
+          {images.map((photo) => (
+            <GalleryImage
+              key={photo.src}
+              photo={photo}
+              selected={selected === photo.src}
+              onClick={() => setSelected(photo.src === selected ? null : photo.src)}
+            />
           ))}
         </div>
       </div>

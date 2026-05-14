@@ -19,7 +19,7 @@ function formatDuration(ms: number) {
 export default function PlaylistDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { playlists, accessToken, deletePlaylist, duplicatePlaylist } = useAuth();
+  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist } = useAuth();
   const { settings } = useAppStore();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -79,6 +79,13 @@ export default function PlaylistDetailPage() {
     try {
       await removeTracksFromPlaylist(accessToken, playlist.id, [...selectedTracks]);
       setTracks((prev) => prev.filter((t) => !selectedTracks.has(t.uri)));
+      setPlaylists((prev) =>
+        prev.map((p) =>
+          p.id === playlist.id
+            ? { ...p, totalTracks: Math.max(0, (p.totalTracks ?? 0) - selectedTracks.size) }
+            : p
+        )
+      );
       setSelectedTracks(new Set());
       toast.success(`${selectedTracks.size} tracks removed`);
     } catch {

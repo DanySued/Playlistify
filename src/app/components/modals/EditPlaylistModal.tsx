@@ -139,7 +139,7 @@ export default function EditPlaylistModal({ playlist, onClose }: Props) {
                 <span style={{ fontSize: 13, color: "var(--text2)", marginTop: 8 }}>Click to change cover (JPEG)</span>
               </div>
             ) : (
-              <div style={{ margin: "0 -20px", maxHeight: 380, overflowY: "auto", borderRadius: 12, overflow: "hidden" }}>
+              <div style={{ margin: "0 -20px", maxHeight: 380, overflowY: "auto", borderRadius: 12 }}>
                 <ImageGallery
                   playlistId={playlist.id}
                   playlistName={name || playlist.name}

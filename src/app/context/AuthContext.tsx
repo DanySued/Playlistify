@@ -287,7 +287,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       false,
     );
     if (uris.length) await spotifyAddTracks(token, created.id, uris);
-    const newPl = apiPlaylistToLocal(created);
+    const newPl = { ...apiPlaylistToLocal(created), totalTracks: uris.length };
     setPlaylists((prev) => {
       const next = [newPl, ...prev];
       localStorage.setItem("spotify_playlists", JSON.stringify(next));
