@@ -91,6 +91,17 @@ function clearTokens() {
   localStorage.removeItem("spotify_playlists");
 }
 
+async function fetchFreshPlaylists(token: string): Promise<Playlist[]> {
+  const rawSettings = JSON.parse(localStorage.getItem("pfy_settings") ?? "{}");
+  const [raw, albums] = await Promise.all([
+    getSpotifyPlaylists(token),
+    rawSettings.treatAlbumsAsPlaylists ? getSpotifySavedAlbums(token) : Promise.resolve([] as SpotifyAPIPlaylist[]),
+  ]);
+  const playlists = raw.map(apiPlaylistToLocal);
+  if (!albums.length) return playlists;
+  return [...playlists, ...albums.map((a) => ({ ...apiPlaylistToLocal(a), isAlbum: true }))];
+}
+
 function mergePlaylists(fresh: Playlist[], saved: Playlist[]): Playlist[] {
   const savedMap = new Map(saved.map((p) => [p.id, p]));
   return fresh.map((fp) => {
@@ -152,14 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!token) return;
     setIsLoadingPlaylists(true);
     try {
-      const raw = await getSpotifyPlaylists(token);
-      let fresh = raw.map(apiPlaylistToLocal);
-      const rawSettings = JSON.parse(localStorage.getItem("pfy_settings") ?? "{}");
-      if (rawSettings.treatAlbumsAsPlaylists) {
-        const albums = await getSpotifySavedAlbums(token);
-        const albumsMapped = albums.map((a) => ({ ...apiPlaylistToLocal(a), isAlbum: true }));
-        fresh = [...fresh, ...albumsMapped];
-      }
+      const fresh = await fetchFreshPlaylists(token);
       setPlaylists((prev) => {
         const merged = mergePlaylists(fresh, prev);
         localStorage.setItem("spotify_playlists", JSON.stringify(merged));
@@ -199,14 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(spotifyUser);
     localStorage.setItem("spotify_user", JSON.stringify(spotifyUser));
 
-    const raw = await getSpotifyPlaylists(tokens.access_token);
-    let fresh = raw.map(apiPlaylistToLocal);
-    const rawSettings = JSON.parse(localStorage.getItem("pfy_settings") ?? "{}");
-    if (rawSettings.treatAlbumsAsPlaylists) {
-      const albums = await getSpotifySavedAlbums(tokens.access_token);
-      const albumsMapped = albums.map((a) => ({ ...apiPlaylistToLocal(a), isAlbum: true }));
-      fresh = [...fresh, ...albumsMapped];
-    }
+    const fresh = await fetchFreshPlaylists(tokens.access_token);
     const saved = localStorage.getItem("spotify_playlists");
     const savedList: Playlist[] = saved ? JSON.parse(saved) : [];
     const merged = mergePlaylists(fresh, savedList);

@@ -67,18 +67,16 @@ function TrackRow({ track, index, tracks, setTracks, selected, onToggle, isOwner
       }}
       onClick={onToggle}
     >
-      {isOwner ? (
+      {selected ? (
+        <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+          <Check size={16} color="var(--gr)" />
+        </div>
+      ) : isOwner ? (
         <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0, color: "var(--text2)" }}>
-          {selected ? <Check size={16} color="var(--gr)" /> : <GripVertical size={16} />}
+          <GripVertical size={16} />
         </div>
       ) : (
-        selected ? (
-          <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0 }}>
-            <Check size={16} color="var(--gr)" />
-          </div>
-        ) : (
-          <span className="track-num">{index + 1}</span>
-        )
+        <span className="track-num">{index + 1}</span>
       )}
       {track.albumImageUrl ? (
         <img src={track.albumImageUrl} alt="" className="track-art" />
@@ -131,7 +129,7 @@ export default function PlaylistDetailPage() {
         );
       })
       .catch((err: Error) => {
-        if (err.message.includes("403")) {
+        if (err.message === "Spotify 403") {
           logout();
           navigate("/login");
         } else {
