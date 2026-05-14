@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, Edit3, Trash2, Archive, X, SquareCheckBig, Plus, Sparkles } from "lucide-react";
+import { ArrowLeft, Edit3, Trash2, Archive, X, SquareCheckBig, Plus, Sparkles, GripVertical } from "lucide-react";
+import { useDrag, useDrop } from "react-dnd";
 import { useAppStore } from "../context/AppStore";
 import { useAuth } from "../context/AuthContext";
 import PlaylistCard from "../components/PlaylistCard";
@@ -8,6 +9,59 @@ import MultiSelectBar from "../components/MultiSelectBar";
 import SaveToBoardModal from "../components/modals/SaveToBoardModal";
 import { toast } from "sonner";
 import { getGeminiSuggestion } from "../../lib/gemini";
+import type { Playlist } from "../../types";
+
+interface PlaylistSlotProps {
+  playlist: Playlist;
+  index: number;
+  boardId: string;
+  boardPlaylistIds: string[];
+  updateBoard: (id: string, updates: { playlistIds: string[] }) => void;
+  selectionMode: boolean;
+  isSelected: boolean;
+  onToggleSelect: () => void;
+}
+
+function PlaylistSlot({ playlist, index, boardId, boardPlaylistIds, updateBoard, selectionMode, isSelected, onToggleSelect }: PlaylistSlotProps) {
+  const [, dragRef] = useDrag({
+    type: "BOARD_PLAYLIST",
+    item: { index, playlistId: playlist.id },
+  });
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: "BOARD_PLAYLIST",
+    hover: (item: { index: number }) => {
+      if (item.index === index) return;
+      const newIds = [...boardPlaylistIds];
+      newIds.splice(index, 0, newIds.splice(item.index, 1)[0]);
+      updateBoard(boardId, { playlistIds: newIds });
+      item.index = index;
+    },
+    collect: (m) => ({ isOver: m.isOver() }),
+  });
+
+  const wrapRef = useCallback((node: HTMLDivElement | null) => {
+    dropRef(node);
+  }, [dropRef]);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="board-slot"
+      style={{ outline: isOver ? "2px solid var(--gr)" : undefined, outlineOffset: -2 }}
+    >
+      <div ref={dragRef} className="board-slot-handle" title="Drag to reorder">
+        <GripVertical size={14} />
+      </div>
+      <PlaylistCard
+        playlist={playlist}
+        selectionMode={selectionMode}
+        isSelected={isSelected}
+        onToggleSelect={onToggleSelect}
+      />
+    </div>
+  );
+}
 
 export default function BoardDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -158,10 +212,14 @@ export default function BoardDetailPage() {
         </div>
       ) : (
         <div className="masonry">
-          {boardPlaylists.map((playlist) => (
-            <PlaylistCard
+          {boardPlaylists.map((playlist, i) => (
+            <PlaylistSlot
               key={playlist.id}
               playlist={playlist}
+              index={i}
+              boardId={board.id}
+              boardPlaylistIds={board.playlistIds}
+              updateBoard={updateBoard}
               selectionMode={selectionMode}
               isSelected={selectedIds.has(playlist.id)}
               onToggleSelect={() => toggleSelect(playlist.id)}

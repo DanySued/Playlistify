@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, Music, ExternalLink, Edit3, Trash2, Copy, BookmarkPlus, MoreHorizontal, Loader2, Trash, Check } from "lucide-react";
+import { ArrowLeft, Music, ExternalLink, Edit3, Trash2, Copy, BookmarkPlus, Loader2, Trash, Check, GripVertical } from "lucide-react";
+import { useDrag, useDrop } from "react-dnd";
 import { useAuth } from "../context/AuthContext";
 import { useAppStore } from "../context/AppStore";
-import { getSpotifyPlaylistTracks, removeTracksFromPlaylist } from "../../lib/spotify";
+import { getSpotifyPlaylistTracks, removeTracksFromPlaylist, reorderPlaylistTrack } from "../../lib/spotify";
 import { toast } from "sonner";
 import EditPlaylistModal from "../components/modals/EditPlaylistModal";
 import SaveToBoardModal from "../components/modals/SaveToBoardModal";
@@ -16,10 +17,87 @@ function formatDuration(ms: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+interface TrackRowProps {
+  track: Track;
+  index: number;
+  tracks: Track[];
+  setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
+  selected: boolean;
+  onToggle: () => void;
+  isOwner: boolean;
+  playlistId: string;
+  accessToken: string | null;
+}
+
+function TrackRow({ track, index, tracks, setTracks, selected, onToggle, isOwner, playlistId, accessToken }: TrackRowProps) {
+  const [, dragRef] = useDrag({
+    type: "TRACK",
+    item: { index },
+  });
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: "TRACK",
+    drop: async (item: { index: number }) => {
+      if (item.index === index) return;
+      const newTracks = [...tracks];
+      newTracks.splice(index, 0, newTracks.splice(item.index, 1)[0]);
+      setTracks(newTracks);
+      const insertBefore = index > item.index ? index + 1 : index;
+      try {
+        await reorderPlaylistTrack(accessToken!, playlistId, item.index, insertBefore);
+      } catch {
+        toast.error("Failed to save track order");
+        setTracks(tracks);
+      }
+    },
+    collect: (m) => ({ isOver: m.isOver() }),
+  });
+
+  const rowRef = useCallback((node: HTMLDivElement | null) => {
+    dragRef(node); dropRef(node);
+  }, [dragRef, dropRef]);
+
+  return (
+    <div
+      ref={rowRef}
+      className="track-row"
+      style={{
+        background: selected ? "var(--bg2)" : isOver ? "var(--bg3)" : "",
+        cursor: isOwner ? "grab" : "default",
+      }}
+      onClick={onToggle}
+    >
+      {isOwner ? (
+        <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0, color: "var(--text2)" }}>
+          {selected ? <Check size={16} color="var(--gr)" /> : <GripVertical size={16} />}
+        </div>
+      ) : (
+        selected ? (
+          <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+            <Check size={16} color="var(--gr)" />
+          </div>
+        ) : (
+          <span className="track-num">{index + 1}</span>
+        )
+      )}
+      {track.albumImageUrl ? (
+        <img src={track.albumImageUrl} alt="" className="track-art" />
+      ) : (
+        <div className="track-art" />
+      )}
+      <div className="track-info">
+        <div className="track-name" style={{ color: selected ? "var(--gr)" : "var(--text)" }}>{track.name}</div>
+        <div className="track-artist">{track.artist}</div>
+      </div>
+      <span className="track-dur">{formatDuration(track.durationMs)}</span>
+    </div>
+  );
+}
+
 export default function PlaylistDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist } = useAuth();
+  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist, user } = useAuth();
   const { settings } = useAppStore();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -210,35 +288,20 @@ export default function PlaylistDetailPage() {
         </div>
       ) : (
         <div>
-          {tracks.map((track, i) => {
-            const selected = selectedTracks.has(track.uri);
-            return (
-              <div
-                key={track.uri}
-                className="track-row"
-                style={{ background: selected ? "var(--bg2)" : "" }}
-                onClick={() => toggleTrack(track.uri)}
-              >
-                {selected ? (
-                  <div style={{ width: 20, display: "flex", justifyContent: "center", flexShrink: 0 }}>
-                    <Check size={16} color="var(--gr)" />
-                  </div>
-                ) : (
-                  <span className="track-num">{i + 1}</span>
-                )}
-                {track.albumImageUrl ? (
-                  <img src={track.albumImageUrl} alt="" className="track-art" />
-                ) : (
-                  <div className="track-art" />
-                )}
-                <div className="track-info">
-                  <div className="track-name" style={{ color: selected ? "var(--gr)" : "var(--text)" }}>{track.name}</div>
-                  <div className="track-artist">{track.artist}</div>
-                </div>
-                <span className="track-dur">{formatDuration(track.durationMs)}</span>
-              </div>
-            );
-          })}
+          {tracks.map((track, i) => (
+            <TrackRow
+              key={track.uri}
+              track={track}
+              index={i}
+              tracks={tracks}
+              setTracks={setTracks}
+              selected={selectedTracks.has(track.uri)}
+              onToggle={() => toggleTrack(track.uri)}
+              isOwner={playlist.ownerId === user?.id}
+              playlistId={playlist.id}
+              accessToken={accessToken}
+            />
+          ))}
         </div>
       )}
 

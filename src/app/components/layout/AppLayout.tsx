@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import NotificationsPanel from "./NotificationsPanel";
 import SettingsPanel from "./SettingsPanel";
+import MobileNav from "./MobileNav";
 
 export type Panel = "notifications" | "settings" | null;
 
@@ -53,6 +54,7 @@ export default function AppLayout() {
           <Outlet context={{ searchQuery }} />
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

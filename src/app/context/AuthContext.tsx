@@ -13,6 +13,7 @@ import {
   refreshAccessToken,
   getSpotifyUser,
   getSpotifyPlaylists,
+  getSpotifySavedAlbums,
   updatePlaylist as spotifyUpdatePlaylist,
   unfollowPlaylist as spotifyUnfollowPlaylist,
   createPlaylist as spotifyCreatePlaylist,
@@ -152,7 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoadingPlaylists(true);
     try {
       const raw = await getSpotifyPlaylists(token);
-      const fresh = raw.map(apiPlaylistToLocal);
+      let fresh = raw.map(apiPlaylistToLocal);
+      const rawSettings = JSON.parse(localStorage.getItem("pfy_settings") ?? "{}");
+      if (rawSettings.treatAlbumsAsPlaylists) {
+        const albums = await getSpotifySavedAlbums(token);
+        const albumsMapped = albums.map((a) => ({ ...apiPlaylistToLocal(a), isAlbum: true }));
+        fresh = [...fresh, ...albumsMapped];
+      }
       setPlaylists((prev) => {
         const merged = mergePlaylists(fresh, prev);
         localStorage.setItem("spotify_playlists", JSON.stringify(merged));
@@ -193,7 +200,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("spotify_user", JSON.stringify(spotifyUser));
 
     const raw = await getSpotifyPlaylists(tokens.access_token);
-    const fresh = raw.map(apiPlaylistToLocal);
+    let fresh = raw.map(apiPlaylistToLocal);
+    const rawSettings = JSON.parse(localStorage.getItem("pfy_settings") ?? "{}");
+    if (rawSettings.treatAlbumsAsPlaylists) {
+      const albums = await getSpotifySavedAlbums(tokens.access_token);
+      const albumsMapped = albums.map((a) => ({ ...apiPlaylistToLocal(a), isAlbum: true }));
+      fresh = [...fresh, ...albumsMapped];
+    }
     const saved = localStorage.getItem("spotify_playlists");
     const savedList: Playlist[] = saved ? JSON.parse(saved) : [];
     const merged = mergePlaylists(fresh, savedList);

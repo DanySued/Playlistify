@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useDrag } from "react-dnd";
 import { useNavigate } from "react-router";
 import {
   MoreHorizontal, Edit3, Trash2, Copy, BookmarkPlus,
@@ -60,6 +61,12 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
   const gradient = getGradient(playlist.id);
   const myLabels = labels.filter((l) => playlist.labelIds.includes(l.id));
 
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "PLAYLIST",
+    item: { id: playlist.id },
+    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+  });
+
   useEffect(() => {
     if (!showCtx) return;
     const handle = (e: MouseEvent) => {
@@ -115,7 +122,9 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
   return (
     <>
       <div
+        ref={dragRef}
         className={`pin${isSelected ? " pin-selected" : ""}${deleting ? " opacity-50 pointer-events-none" : ""}`}
+        style={{ opacity: isDragging ? 0.4 : 1 }}
         onClick={handleCardClick}
       >
         {selectionMode && (

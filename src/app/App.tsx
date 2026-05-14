@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { AuthProvider } from "./context/AuthContext";
 import { AppStoreProvider } from "./context/AppStore";
 import { Toaster } from "sonner";
@@ -28,19 +30,21 @@ export default function App() {
               },
             }}
           />
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/callback" element={<CallbackPage />} />
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/boards" element={<BoardsPage />} />
-              <Route path="/boards/:id" element={<BoardDetailPage />} />
-              <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
-              <Route path="/discover" element={<DiscoverPage />} />
-              <Route path="/radio" element={<RadioPage />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <DndProvider backend={HTML5Backend}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/callback" element={<CallbackPage />} />
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/boards" element={<BoardsPage />} />
+                <Route path="/boards/:id" element={<BoardDetailPage />} />
+                <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
+                <Route path="/discover" element={<DiscoverPage />} />
+                <Route path="/radio" element={<RadioPage />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </DndProvider>
         </AppStoreProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -279,6 +279,20 @@ export async function removeTracksFromPlaylist(
   if (!res.ok) throw new Error("Failed to remove tracks");
 }
 
+export async function reorderPlaylistTrack(
+  accessToken: string,
+  playlistId: string,
+  rangeStart: number,
+  insertBefore: number,
+): Promise<void> {
+  const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ range_start: rangeStart, insert_before: insertBefore, range_length: 1 }),
+  });
+  if (!res.ok) throw new Error("Failed to reorder track");
+}
+
 export async function searchArtists(
   accessToken: string,
   query: string,

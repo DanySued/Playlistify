@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Plus, Sparkles } from "lucide-react";
+import { useDrop } from "react-dnd";
 import { useAppStore } from "../context/AppStore";
 import { useAuth } from "../context/AuthContext";
 import CreateModal from "../components/modals/CreateModal";
+import { toast } from "sonner";
 
 const GRADIENTS = [
   "linear-gradient(135deg,#f093fb,#f5576c)",
@@ -29,7 +31,7 @@ function getBoardGradients(boardId: string) {
 
 export default function BoardsPage() {
   const navigate = useNavigate();
-  const { boards, deleteBoard, archiveBoard } = useAppStore();
+  const { boards, deleteBoard, archiveBoard, addPlaylistToBoard } = useAppStore();
   const { playlists } = useAuth();
   const [showCreate, setShowCreate] = useState(false);
   const [activeTab, setActiveTab] = useState<"boards" | "archived">("boards");
@@ -48,9 +50,22 @@ export default function BoardsPage() {
   const BoardCard = ({ board }: { board: typeof boards[0] }) => {
     const covers = getBoardCoverImages(board);
     const gradients = getBoardGradients(board.id);
+    const [{ isOver }, dropRef] = useDrop({
+      accept: "PLAYLIST",
+      drop: (item: { id: string }) => {
+        addPlaylistToBoard(board.id, item.id);
+        toast.success(`Added to "${board.name}"`);
+      },
+      collect: (monitor) => ({ isOver: monitor.isOver() }),
+    });
 
     return (
-      <div className="board-card" onClick={() => navigate(`/boards/${board.id}`)}>
+      <div
+        ref={dropRef}
+        className="board-card"
+        style={{ outline: isOver ? "2px solid var(--gr)" : undefined }}
+        onClick={() => navigate(`/boards/${board.id}`)}
+      >
         <div className="board-thumb">
           {/* Main (left, full height) */}
           <div className="bt-main" style={{ overflow: "hidden" }}>
