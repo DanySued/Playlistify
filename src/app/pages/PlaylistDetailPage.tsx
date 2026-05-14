@@ -130,7 +130,7 @@ export default function PlaylistDetailPage() {
             }))
         );
       })
-      .catch(() => toast.error("Failed to load tracks"))
+      .catch((err: Error) => toast.error(`Failed to load tracks (${err.message})`))
       .finally(() => setLoadingTracks(false));
   }, [id, accessToken]);
 
