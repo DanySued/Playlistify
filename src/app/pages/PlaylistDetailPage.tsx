@@ -97,7 +97,7 @@ function TrackRow({ track, index, tracks, setTracks, selected, onToggle, isOwner
 export default function PlaylistDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist, user } = useAuth();
+  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist, user, logout } = useAuth();
   const { settings } = useAppStore();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -130,7 +130,14 @@ export default function PlaylistDetailPage() {
             }))
         );
       })
-      .catch((err: Error) => toast.error(`Failed to load tracks (${err.message})`))
+      .catch((err: Error) => {
+        if (err.message.includes("403")) {
+          logout();
+          navigate("/login");
+        } else {
+          toast.error("Failed to load tracks");
+        }
+      })
       .finally(() => setLoadingTracks(false));
   }, [id, accessToken]);
 
