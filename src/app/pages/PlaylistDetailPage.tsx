@@ -95,7 +95,7 @@ function TrackRow({ track, index, tracks, setTracks, selected, onToggle, isOwner
 export default function PlaylistDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist, user, logout } = useAuth();
+  const { playlists, setPlaylists, accessToken, deletePlaylist, duplicatePlaylist, user, loginWithSpotify } = useAuth();
   const { settings } = useAppStore();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -129,9 +129,9 @@ export default function PlaylistDetailPage() {
         );
       })
       .catch((err: Error) => {
-        if (err.message === "Spotify 403") {
-          logout();
-          navigate("/login");
+        if (err.message === "Spotify 403" || err.message === "Spotify 401") {
+          toast.error("Session expired — reconnecting to Spotify…");
+          loginWithSpotify();
         } else {
           toast.error("Failed to load tracks");
         }
