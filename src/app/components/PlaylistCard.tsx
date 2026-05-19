@@ -45,9 +45,12 @@ interface Props {
   isSelected: boolean;
   onToggleSelect: () => void;
   onDeleted?: () => void;
+  cardIndex?: number;
 }
 
-export default function PlaylistCard({ playlist, selectionMode, isSelected, onToggleSelect, onDeleted }: Props) {
+export default function PlaylistCard({
+  playlist, selectionMode, isSelected, onToggleSelect, onDeleted, cardIndex = 0,
+}: Props) {
   const navigate = useNavigate();
   const { deletePlaylist, duplicatePlaylist } = useAuth();
   const { labels } = useAppStore();
@@ -82,8 +85,8 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
     const vh = window.innerHeight;
     let x = e.clientX;
     let y = e.clientY;
-    if (x + 210 > vw) x = vw - 215;
-    if (y + 280 > vh) y = vh - 285;
+    if (x + 220 > vw) x = vw - 225;
+    if (y + 290 > vh) y = vh - 295;
     setCtxPos({ x, y });
     setShowCtx(true);
   };
@@ -124,7 +127,10 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
       <div
         ref={dragRef}
         className={`pin${isSelected ? " pin-selected" : ""}${deleting ? " opacity-50 pointer-events-none" : ""}`}
-        style={{ opacity: isDragging ? 0.4 : 1 }}
+        style={{
+          opacity: isDragging ? 0.3 : 1,
+          ["--card-i" as string]: cardIndex,
+        }}
         onClick={handleCardClick}
       >
         {selectionMode && (
@@ -132,43 +138,47 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
             className={`pin-check${isSelected ? " checked" : ""}`}
             onClick={(e) => { e.stopPropagation(); onToggleSelect(); }}
           >
-            {isSelected && <Check size={14} color="white" />}
+            {isSelected && <Check size={13} color="white" />}
           </div>
         )}
 
-        {playlist.imageUrl ? (
-          <img
-            src={playlist.imageUrl}
-            alt={playlist.name}
-            className="pin-img"
-            style={{ height }}
-            loading="lazy"
-          />
-        ) : (
-          <div className="pin-grad" style={{ height, background: gradient }} />
-        )}
+        {/* Media wrapper — overlay is scoped here */}
+        <div className="pin-media">
+          {playlist.imageUrl ? (
+            <img
+              src={playlist.imageUrl}
+              alt={playlist.name}
+              className="pin-img"
+              style={{ height }}
+              loading="lazy"
+            />
+          ) : (
+            <div className="pin-grad" style={{ height, background: gradient }} />
+          )}
 
-        {!selectionMode && (
-          <div className="pin-ov">
-            <button
-              className="btn-save"
-              onClick={(e) => { e.stopPropagation(); setModal("save"); }}
-            >
-              Add to board
-            </button>
-          </div>
-        )}
+          {!selectionMode && (
+            <>
+              <div className="pin-ov">
+                <button
+                  className="btn-save"
+                  onClick={(e) => { e.stopPropagation(); setModal("save"); }}
+                >
+                  Add to board
+                </button>
+              </div>
 
-        {!selectionMode && (
-          <button className="pin-more-btn" onClick={openCtx}>
-            <MoreHorizontal size={16} />
-          </button>
-        )}
+              <button className="pin-more-btn" onClick={openCtx}>
+                <MoreHorizontal size={15} />
+              </button>
+            </>
+          )}
+        </div>
 
         <div className="pin-info">
           <div className="pin-name">{playlist.name}</div>
-          <div className="pin-meta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <Music size={11} /> {playlist.totalTracks ?? "?"} tracks
+          <div className="pin-meta">
+            <Music size={11} />
+            {playlist.totalTracks ?? "?"} tracks
           </div>
           {myLabels.length > 0 && (
             <div className="pin-labels">
@@ -185,25 +195,25 @@ export default function PlaylistCard({ playlist, selectionMode, isSelected, onTo
       {showCtx && (
         <div ref={ctxRef} className="ctx-menu" style={{ top: ctxPos.y, left: ctxPos.x }}>
           <div className="ctx-it" onClick={() => { setShowCtx(false); navigate(`/playlist/${playlist.id}`); }}>
-            <ListMusic size={18} /> View tracks
+            <ListMusic size={17} /> View tracks
           </div>
           <div className="ctx-sep" />
           <div className="ctx-it" onClick={() => { setShowCtx(false); setModal("save"); }}>
-            <BookmarkPlus size={18} /> Add to board
+            <BookmarkPlus size={17} /> Add to board
           </div>
           <div className="ctx-it" onClick={() => { setShowCtx(false); setModal("edit"); }}>
-            <Edit3 size={18} /> Edit playlist
+            <Edit3 size={17} /> Edit playlist
           </div>
           <div className="ctx-it" onClick={() => { setShowCtx(false); setModal("label"); }}>
-            <Tag size={18} /> Manage labels
+            <Tag size={17} /> Manage labels
           </div>
           <div className="ctx-sep" />
           <div className="ctx-it" onClick={handleDuplicate}>
-            <Copy size={18} /> Duplicate
+            <Copy size={17} /> Duplicate
           </div>
           <div className="ctx-sep" />
           <div className="ctx-it danger" onClick={handleDelete}>
-            <Trash2 size={18} /> Delete playlist
+            <Trash2 size={17} /> Delete playlist
           </div>
         </div>
       )}

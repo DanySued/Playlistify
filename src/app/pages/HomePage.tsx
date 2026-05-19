@@ -59,7 +59,9 @@ export default function HomePage() {
       {/* Sub-header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "16px 20px 8px", flexWrap: "wrap", gap: 10,
+        padding: "16px 20px 12px", flexWrap: "wrap", gap: 10,
+        borderBottom: "1px solid var(--border)",
+        marginBottom: 4,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           {/* Label filters */}
@@ -108,24 +110,36 @@ export default function HomePage() {
 
       {/* Empty state */}
       {!isLoadingPlaylists && filtered.length === 0 && (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text2)" }}>
+        <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--text2)" }}>
           {playlists.length === 0 ? (
             <>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🎵</div>
+              <div style={{
+                width: 72, height: 72, borderRadius: "50%",
+                background: "var(--bg3)", display: "inline-flex",
+                alignItems: "center", justifyContent: "center",
+                marginBottom: 20, fontSize: 32,
+              }}>🎵</div>
               <h2 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>No playlists yet</h2>
-              <p style={{ fontSize: 15 }}>Sync your Spotify account to see your playlists here.</p>
+              <p style={{ fontSize: 14, maxWidth: 280, margin: "0 auto" }}>
+                Sync your Spotify account to see your playlists here.
+              </p>
               <button
                 className="btn-primary"
-                style={{ marginTop: 20, display: "inline-flex", alignItems: "center", gap: 6 }}
+                style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 7 }}
                 onClick={refreshPlaylists}
               >
-                <RefreshCw size={16} /> Sync Spotify
+                <RefreshCw size={15} /> Sync Spotify
               </button>
             </>
           ) : (
             <>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
-              <p>No playlists match your search.</p>
+              <div style={{
+                width: 64, height: 64, borderRadius: "50%",
+                background: "var(--bg3)", display: "inline-flex",
+                alignItems: "center", justifyContent: "center",
+                marginBottom: 16, fontSize: 28,
+              }}>🔍</div>
+              <p style={{ fontSize: 14 }}>No playlists match your search.</p>
             </>
           )}
         </div>
@@ -134,13 +148,14 @@ export default function HomePage() {
       {/* Masonry grid */}
       {filtered.length > 0 && (
         <div className="masonry">
-          {filtered.map((playlist) => (
+          {filtered.map((playlist, i) => (
             <PlaylistCard
               key={playlist.id}
               playlist={playlist}
               selectionMode={selectionMode}
               isSelected={selectedIds.has(playlist.id)}
               onToggleSelect={() => toggleSelect(playlist.id)}
+              cardIndex={i}
             />
           ))}
         </div>
